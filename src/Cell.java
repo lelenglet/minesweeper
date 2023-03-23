@@ -14,24 +14,36 @@ class Cell {
     this.neighbor = new EnumMap<Direction, Cell>(Direction.class);
   }
 
-  private int getMarqued() {
+  public int getValue() {
+    return this.value;
+  }
+
+  public boolean isMine() {
+    return getValue() == -1;
+  }
+
+  public int getState() {
     return this.state;
   }
 
   private void setMarqued() {
-    if (getMarqued() == 0) {
+    if (getState() == 0) {
       this.state = 1;
-    } else if (getMarqued() == 1) {
+    } else if (getState() == 1) {
       this.state = 0;
     }
   }
 
-  private Direction seekNeighbor(Cell neighbor) {
+  public Direction seekNeighbor(Cell neighbor) {
     for (Direction d : this.neighbor.keySet()) {
       if (this.neighbor.get(d) == neighbor) {
         return d;
       }
     }
     return null;
+  }
+
+  private void addNeighbor(Cell neighbor, Direction dir) {
+    this.neighbor.put(dir, neighbor);
   }
 }
