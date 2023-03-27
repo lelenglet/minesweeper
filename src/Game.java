@@ -1,12 +1,12 @@
 package src;
+
+import java.util.Scanner;
+
 public class Game {
   public static final String BLUE_BOLD = "\033[1;34m"; // BLUE
   public static final String RESET = "\033[0m"; // Text Reset
   private Grid plateau;
-
-  Game(int hauteur, int largeur, int nbMines) {
-    this.plateau = new Grid(hauteur, largeur, nbMines);
-  }
+  private Scanner s = new Scanner(System.in);
 
   public void newGame() {
     System.out.println(
@@ -22,18 +22,40 @@ public class Game {
     System.out.println(
         "|_______/ |_______||__|  |__| |__| |__| \\__| |_______| \\______/  | _| `._____|");
     System.out.println("\t\t by Lenglet Léa and Chevalier Antoine\t\t\n" + RESET);
-    System.out.println("\n Choose a level : \n");
 
-    System.out.println("  _       ___       ____      _ _        ___ ");
-    System.out.println(" / |     |_  )     |__ /     | | |      | __|");
-    System.out.println(" | |      / /       |_ \\     |_  _|     |__ \\");
-    System.out.println(" |_|     /___|     |___/       |_|      |___/");
-
-    System.out.println("\nEnter the number of the level (press 'q' to quit)\n");
-    System.out.println("> ");
+    System.out.println("\nEnter the number of rows in grid (press 'q' to quit)\n");
+    System.out.printf("> ");
+    int h = s.nextInt();
+    System.out.println("\nEnter the number of columns in grid (press 'q' to quit)\n");
+    System.out.printf("> ");
+    int w = s.nextInt();
+    System.out.println("\nEnter the purcentage of t in grid (press 'q' to quit)\n");
+    System.out.printf("> ");
+    int m = s.nextInt();
+    m = (h * w) * m / 100;
+    this.plateau = new Grid(h, w, m);
+    this.plateau.initGrid();
   }
+
+  public void jouerCoup() {
+    this.plateau.displayGrid();
+    System.out.println("Choose a box");
+    int x = s.nextInt();
+    int y = s.nextInt();
+    System.out.println(x + " " + y);
+    System.out.println("Choose an action : r for reveal / m for mark");
+    char action = s.next().charAt(0);
+    System.out.println("c = " + action);
+    if (action == 'm') {
+      this.plateau.getCell(x, y).setMarqued();
+    } else {
+      this.plateau.getCell(x, y).revealCell();
+    }
+  }
+
   public static void main(String[] args) {
-    Game g = new Game(1, 1, 1);
+    Game g = new Game();
     g.newGame();
+    g.jouerCoup();
   }
 }

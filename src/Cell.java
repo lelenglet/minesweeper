@@ -26,11 +26,26 @@ class Cell {
     return this.state;
   }
 
-  private void setMarqued() {
+  protected void setMarqued() {
     if (getState() == 0) {
       this.state = 1;
     } else if (getState() == 1) {
       this.state = 0;
+    }
+  }
+
+  protected void setValue(int v) {
+    this.value = v;
+  }
+
+  protected void revealCell() {
+    if (this.getValue() == 0 && this.getState() == 0) {
+      this.state = -1;
+      for (Direction d : Direction.values()) {
+        this.neighbor.get(d).revealCell();
+      }
+    } else {
+      this.state = -1;
     }
   }
 
@@ -43,7 +58,11 @@ class Cell {
     return null;
   }
 
-  private void addNeighbor(Cell neighbor, Direction dir) {
+  protected void addNeighbor(Cell neighbor, Direction dir) {
     this.neighbor.put(dir, neighbor);
+  }
+
+  public String toString() {
+    return String.format("%d", this.value);
   }
 }
