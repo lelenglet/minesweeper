@@ -7,6 +7,7 @@ public class Game {
   private Scanner s = new Scanner(System.in);
 
   public void newGame() {
+    this.clearScreen();
     System.out.println(
         BLUE_BOLD + "\n _______   _______ .___  ___.  __  .__   __.  _______  __    __  .______");
     System.out.println(
@@ -30,32 +31,81 @@ public class Game {
     System.out.println("\nEnter the purcentage of t in grid (press 'q' to quit)\n");
     System.out.printf("> ");
     int m = s.nextInt();
+
     m = (h * w) * m / 100;
     this.plateau = new Grid(h, w, m);
     this.plateau.initGrid();
+
+    int continu = 0;
+    while (continu == 0) {
+      continu = jouerCoup();
+    }
+    if (continu == -1) {
+      looseGame();
+    } else {
+      winGame();
+    }
   }
 
-  public void jouerCoup() {
+  public int jouerCoup() {
+    int returnValue = 0;
     this.plateau.displayGrid();
-    System.out.println("Choose a box");
+    System.out.println("Choose a box (x y)");
     int x = s.nextInt();
     int y = s.nextInt();
-    System.out.println(x + " " + y);
     System.out.println("Choose an action : r for reveal / m for mark");
     char action = s.next().charAt(0);
-    System.out.println("c = " + action);
     if (action == 'm') {
       this.plateau.getCell(x, y).setMarqued();
     } else {
-      this.plateau.getCell(x, y).revealCell();
+      boolean mine = this.plateau.getCell(x, y).revealCell();
+      if (!mine) {
+        returnValue = -1;
+      } else {
+        if (this.plateau.checkWin()) {
+          returnValue = 1;
+        }
+      }
     }
+    return returnValue;
   }
 
+  public void looseGame() {
+    System.out.println(
+        "____    ____  ______    __    __      __        ______     ______        _______. _______     __  ");
+    System.out.println(
+        "\\   \\  /   / /  __  \\  |  |  |  |    |  |      /  __  \\   /  __  \\      /       ||   ____|   |  | ");
+    System.out.println(
+        " \\   \\/   / |  |  |  | |  |  |  |    |  |     |  |  |  | |  |  |  |    |   (----`|  |__      |  | ");
+    System.out.println(
+        "  \\_    _/  |  |  |  | |  |  |  |    |  |     |  |  |  | |  |  |  |     \\   \\    |   __|     |  | ");
+    System.out.println(
+        "    |  |    |  `--'  | |  `--'  |    |  `----.|  `--'  | |  `--'  | .----)   |   |  |____    |__| ");
+    System.out.println(
+        "    |__|     \\______/   \\______/     |_______| \\______/   \\______/  |_______/    |_______|   (__) ");
+  }
+
+  public void winGame() {
+    System.out.println(
+        "____    ____  ______    __    __     ____    __    ____  __  .__   __.     __  ");
+    System.out.println(
+        "\\   \\  /   / /  __  \\  |  |  |  |    \\   \\  /  \\  /   / |  | |  \\ |  |    |  | ");
+    System.out.println(
+        " \\   \\/   / |  |  |  | |  |  |  |     \\   \\/    \\/   /  |  | |   \\|  |    |  | ");
+    System.out.println(
+        "  \\_    _/  |  |  |  | |  |  |  |      \\            /   |  | |  . `  |    |  | ");
+    System.out.println(
+        "    |  |    |  `--'  | |  `--'  |       \\    /\\    /    |  | |  |\\   |    |__| ");
+    System.out.println(
+        "    |__|     \\______/   \\______/         \\__/  \\__/     |__| |__| \\__|    (__) ");
+  }
+
+  public void clearScreen() {
+    System.out.print("\033[H\033[2J");
+    System.out.flush();
+  }
   public static void main(String[] args) {
     Game g = new Game();
     g.newGame();
-    while (true) {
-      g.jouerCoup();
-    }
   }
 }

@@ -20,12 +20,22 @@ public class Grid {
     this.header = createHeader();
   }
 
+  public Cell getCell(int x, int y) {
+    return gamePlate[x][y];
+  }
+
   public void initGrid() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
         gamePlate[i][j] = new Cell(0);
       }
     }
+    this.initLink();
+    this.addMine();
+    this.updateGrid();
+  }
+
+  public void initLink() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
         if (i == 0) {
@@ -84,6 +94,9 @@ public class Grid {
         }
       }
     }
+  }
+
+  public void addMine() {
     int cpt = 0;
     Random r = new Random();
     while (cpt < this.nbMine) {
@@ -94,10 +107,12 @@ public class Grid {
         cpt++;
       }
     }
+  }
+
+  public void updateGrid() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
         gamePlate[i][j].mineInNeighborhood();
-        ;
       }
     }
   }
@@ -115,6 +130,17 @@ public class Grid {
       header.append("\u2015 ");
     }
     return header.toString();
+  }
+
+  public boolean checkWin() {
+    for (int i = 0; i < this.height; i++) {
+      for (int j = 0; j < this.width; j++) {
+        if (gamePlate[i][j].getValue() > 0 && gamePlate[i][j].getState() == 0) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   public void displayGrid() { // non testée
@@ -136,9 +162,5 @@ public class Grid {
       }
       System.out.println(RESET);
     }
-  }
-
-  public Cell getCell(int x, int y) {
-    return gamePlate[x][y];
   }
 }

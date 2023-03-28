@@ -11,16 +11,16 @@ class Cell {
     this.neighbor = new EnumMap<Direction, Cell>(Direction.class);
   }
 
+  protected void setValue(int v) {
+    this.value = v;
+  }
+
   public int getValue() {
     return this.value;
   }
 
   public boolean isMine() {
     return getValue() == -1;
-  }
-
-  public int getState() {
-    return this.state;
   }
 
   protected void setMarqued() {
@@ -31,19 +31,12 @@ class Cell {
     }
   }
 
-  protected void setValue(int v) {
-    this.value = v;
+  public int getState() {
+    return this.state;
   }
 
-  protected void revealCell() {
-    if (this.getState() == 0) {
-      this.state = -1;
-      if (this.getValue() == 0) {
-        for (Direction d : this.neighbor.keySet()) {
-          this.neighbor.get(d).revealCell();
-        }
-      }
-    }
+  protected void addNeighbor(Cell neighbor, Direction dir) {
+    this.neighbor.put(dir, neighbor);
   }
 
   public Direction seekNeighbor(Cell neighbor) {
@@ -65,8 +58,18 @@ class Cell {
     }
   }
 
-  protected void addNeighbor(Cell neighbor, Direction dir) {
-    this.neighbor.put(dir, neighbor);
+  protected boolean revealCell() {
+    if (this.getState() == 0) {
+      this.state = -1;
+      if (this.getValue() == 0) {
+        for (Direction d : this.neighbor.keySet()) {
+          this.neighbor.get(d).revealCell();
+        }
+      } else if (this.isMine()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public String toString() {
