@@ -143,6 +143,21 @@ public class Grid {
     return true;
   }
 
+  private String createHeader() {
+    StringBuilder header =
+        new StringBuilder(WHITE_BACKGROUND + BLACK_BOLD + "\u0000 \u0000 \u0000 ");
+
+    for (int i = 0; i < this.width; i++) {
+      header.append(i + "\uFE0F ");
+    }
+    header.append("\n"
+        + "\u0000 \u0000 \u0000 ");
+    for (int i = 0; i < this.width; i++) {
+      header.append("\u2015 ");
+    }
+    return header.toString();
+  }
+
   public void displayGrid() { // non testée
     System.out.printf(CLEAR);
     System.out.println(this.header);
