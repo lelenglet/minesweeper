@@ -39,13 +39,13 @@ class Cell {
   }
 
   protected void revealCell() {
-    if (this.getValue() == 0 && this.getState() == 0) {
+    if (this.getState() == 0) {
       this.state = -1;
-      for (Direction d : Direction.values()) {
-        this.neighbor.get(d).revealCell();
+      if (this.getValue() == 0) {
+        for (Direction d : this.neighbor.keySet()) {
+          this.neighbor.get(d).revealCell();
+        }
       }
-    } else {
-      this.state = -1;
     }
   }
 

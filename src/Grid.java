@@ -83,8 +83,8 @@ public class Grid {
     int cpt = 0;
     Random r = new Random();
     while (cpt < this.nbMine) {
-      int x = r.nextInt(this.width);
-      int y = r.nextInt(this.height);
+      int x = r.nextInt(this.height);
+      int y = r.nextInt(this.width);
       if (this.gamePlate[x][y].getValue() == 0) {
         this.gamePlate[x][y].setValue(-1);
         cpt++;
@@ -96,13 +96,13 @@ public class Grid {
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
         if (gamePlate[i][j].getState() == 0) {
-          System.out.printf("\u25A9");
+          System.out.printf(new String(Character.toChars(0x2B1C)));
         } else if (gamePlate[i][j].getState() == 1) {
-          System.out.printf("\u2691");
+          System.out.printf(new String(Character.toChars(0x1F6A9)));
         } else if (gamePlate[i][j].getState() == -1 && gamePlate[i][j].isMine() == false) {
-          System.out.printf("%s", gamePlate[i][j].toString());
+          System.out.printf("%s ", gamePlate[i][j].toString());
         } else {
-          System.out.printf("\u1F4A3");
+          System.out.printf(new String(Character.toChars(0x1F4A5)));
         }
       }
       System.out.println();
