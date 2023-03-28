@@ -70,6 +70,6 @@ class Cell {
   }
 
   public String toString() {
-    return String.format(this.getValue() + "\uFE0F");
+    return String.format(this.getValue() + "\uFE0F ");
   }
 }
