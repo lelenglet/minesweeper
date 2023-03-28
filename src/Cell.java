@@ -56,9 +56,11 @@ class Cell {
   }
 
   public void mineInNeighborhood() {
-    for (Direction d : this.neighbor.keySet()) {
-      if (this.neighbor.get(d).getValue() == -1) {
-        this.value++;
+    if (this.getValue() != -1) {
+      for (Direction d : this.neighbor.keySet()) {
+        if (this.neighbor.get(d).getValue() == -1) {
+          this.value++;
+        }
       }
     }
   }
