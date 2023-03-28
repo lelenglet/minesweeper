@@ -55,6 +55,14 @@ class Cell {
     return null;
   }
 
+  public void mineInNeighborhood() {
+    for (Direction d : this.neighbor.keySet()) {
+      if (this.neighbor.get(d).getValue() == -1) {
+        this.value++;
+      }
+    }
+  }
+
   protected void addNeighbor(Cell neighbor, Direction dir) {
     this.neighbor.put(dir, neighbor);
   }
