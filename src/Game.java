@@ -7,6 +7,7 @@ public class Game {
   private Scanner s = new Scanner(System.in);
 
   public void newGame() {
+    this.clearScreen();
     System.out.println(
         BLUE_BOLD + "\n _______   _______ .___  ___.  __  .__   __.  _______  __    __  .______");
     System.out.println(
@@ -37,7 +38,6 @@ public class Game {
 
     int continu = 0;
     while (continu == 0) {
-      this.clearScreen();
       continu = jouerCoup();
     }
     if (continu == -1) {
