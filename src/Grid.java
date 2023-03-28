@@ -14,6 +14,10 @@ public class Grid {
     this.nbMine = m;
   }
 
+  public Cell getCell(int x, int y) {
+    return gamePlate[x][y];
+  }
+
   public void initGrid() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
@@ -103,9 +107,19 @@ public class Grid {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
         gamePlate[i][j].mineInNeighborhood();
-        ;
       }
     }
+  }
+
+  public boolean checkWin() {
+    for (int i = 0; i < this.height; i++) {
+      for (int j = 0; j < this.width; j++) {
+        if (gamePlate[i][j].getValue() > 0 && gamePlate[i][j].getState() == 0) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   public void displayGrid() { // non testée
@@ -123,9 +137,5 @@ public class Grid {
       }
       System.out.println();
     }
-  }
-
-  public Cell getCell(int x, int y) {
-    return gamePlate[x][y];
   }
 }
