@@ -20,6 +20,12 @@ public class Grid {
         gamePlate[i][j] = new Cell(0);
       }
     }
+    this.initLink();
+    this.addMine();
+    this.updateGrid();
+  }
+
+  public void initLink() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
         if (i == 0) {
@@ -78,6 +84,9 @@ public class Grid {
         }
       }
     }
+  }
+
+  public void addMine() {
     int cpt = 0;
     Random r = new Random();
     while (cpt < this.nbMine) {
@@ -88,6 +97,9 @@ public class Grid {
         cpt++;
       }
     }
+  }
+
+  public void updateGrid() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
         gamePlate[i][j].mineInNeighborhood();
