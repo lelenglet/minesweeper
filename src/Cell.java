@@ -1,7 +1,4 @@
-package src;
-
 import java.util.EnumMap;
-import src.Direction;
 
 class Cell {
   private int value;
