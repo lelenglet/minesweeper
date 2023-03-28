@@ -70,6 +70,6 @@ class Cell {
   }
 
   public String toString() {
-    return String.format("%d", this.value);
+    return String.format(this.getValue() + "\uFE0F");
   }
 }
