@@ -27,15 +27,11 @@ class Cell {
     return this.state;
   }
 
-  protected void addNeighbor(Cell neighbor, Direction dir) {
-    this.neighbor.put(dir, neighbor);
-  }
-
-  public Direction seekNeighbor(Cell neighbor) {
-    for (Direction d : this.neighbor.keySet()) {
-      if (this.neighbor.get(d) == neighbor) {
-        return d;
-      }
+  protected void toggleFlagged() {
+    if (getState() == State.FLAGGED) {
+      this.state = State.COVERED;
+    } else if (getState() == State.COVERED) {
+      this.state = State.FLAGGED;
     }
     return null;
   }
