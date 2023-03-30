@@ -42,17 +42,10 @@ class Cell {
     } else if (getState() == State.COVERED) {
       this.state = State.FLAGGED;
     }
-    return null;
   }
 
-  public void mineInNeighborhood() {
-    if (this.getValue() != -1) {
-      for (Direction d : this.neighbor.keySet()) {
-        if (this.neighbor.get(d).getValue() == -1) {
-          this.value++;
-        }
-      }
-    }
+  protected void addNeighbor(Cell neighbor, Direction dir) {
+    this.neighborhood.put(dir, neighbor);
   }
 
   protected boolean reveal() {
