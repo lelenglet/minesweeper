@@ -2,8 +2,8 @@ import java.util.EnumMap;
 
 class Cell {
   private int value;
-  private EnumMap<Direction, Cell> neighbor;
-  private int state;
+  private State state;
+  private EnumMap<Direction, Cell> neighborhood;
 
   Cell(int v) {
     this.value = v;
