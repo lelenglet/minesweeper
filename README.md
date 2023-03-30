@@ -1,5 +1,11 @@
 # Démineur
 
+## Interface
+
+UI : interface qui va définir l'affichage
+Savable
+Matrix
+
 ## Classes
 
 Cell : a class which represents a cell on the game's grid
@@ -70,4 +76,6 @@ saveGame (String filePath) : void
 
 ## Enumeration
 
-Direction : an enumeration of the different direction possible
+Direction : an enumeration of the different directions possible
+
+State : an enumeration of the different states possible
