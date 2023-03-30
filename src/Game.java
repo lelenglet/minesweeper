@@ -56,9 +56,9 @@ public class Game {
     System.out.println("Choose an action : r for reveal / m for mark");
     char action = s.next().charAt(0);
     if (action == 'm') {
-      this.plateau.getCell(x, y).setMarqued();
+      this.plateau.getCell(x, y).toggleFlagged();
     } else {
-      boolean mine = this.plateau.getCell(x, y).revealCell();
+      boolean mine = this.plateau.getCell(x, y).reveal();
       if (!mine) {
         returnValue = -1;
       } else {
