@@ -23,15 +23,7 @@ class Cell {
     return getValue() == -1;
   }
 
-  protected void setMarqued() {
-    if (getState() == 0) {
-      this.state = 1;
-    } else if (getState() == 1) {
-      this.state = 0;
-    }
-  }
-
-  public int getState() {
+  public State getState() {
     return this.state;
   }
 
