@@ -55,12 +55,12 @@ class Cell {
     }
   }
 
-  protected boolean revealCell() {
-    if (this.getState() == 0) {
-      this.state = -1;
+  protected boolean reveal() {
+    if (this.getState() == State.COVERED) {
+      this.state = State.UNCOVERED;
       if (this.getValue() == 0) {
-        for (Direction d : this.neighbor.keySet()) {
-          this.neighbor.get(d).revealCell();
+        for (Direction d : this.neighborhood.keySet()) {
+          this.neighborhood.get(d).reveal();
         }
       } else if (this.isMine()) {
         return false;
