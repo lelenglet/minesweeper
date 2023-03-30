@@ -5,10 +5,19 @@ class Cell {
   private State state;
   private EnumMap<Direction, Cell> neighborhood;
 
-  Cell(int v) {
-    this.value = v;
-    this.state = 0;
-    this.neighbor = new EnumMap<Direction, Cell>(Direction.class);
+  Cell() {
+    this.state = State.COVERED;
+    this.neighborhood = new EnumMap<Direction, Cell>(Direction.class);
+  }
+
+  public void setValue() {
+    if (this.getValue() != -1) {
+      for (Direction d : this.neighborhood.keySet()) {
+        if (this.neighborhood.get(d).getValue() == -1) {
+          this.value++;
+        }
+      }
+    }
   }
 
   protected void setValue(int v) {
