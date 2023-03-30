@@ -1,4 +1,3 @@
-import java.net.http.WebSocket;
 import java.util.Random;
 
 public class Grid {
@@ -27,7 +26,7 @@ public class Grid {
   public void initGrid() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
-        gamePlate[i][j] = new Cell(0);
+        gamePlate[i][j] = new Cell();
       }
     }
     this.initLink();
@@ -112,7 +111,7 @@ public class Grid {
   public void updateGrid() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
-        gamePlate[i][j].mineInNeighborhood();
+        gamePlate[i][j].setValue();
       }
     }
   }
@@ -135,7 +134,7 @@ public class Grid {
   public boolean checkWin() {
     for (int i = 0; i < this.height; i++) {
       for (int j = 0; j < this.width; j++) {
-        if (gamePlate[i][j].getValue() > 0 && gamePlate[i][j].getState() == 0) {
+        if (gamePlate[i][j].getValue() > 0 && gamePlate[i][j].getState() == State.COVERED) {
           return false;
         }
       }
@@ -150,11 +149,12 @@ public class Grid {
       System.out.print(WHITE_BACKGROUND + BLACK_BOLD);
       System.out.print(i + "\uFE0F \u007C");
       for (int j = 0; j < width; j++) {
-        if (gamePlate[i][j].getState() == 0) {
+        if (gamePlate[i][j].getState() == State.COVERED) {
           System.out.print(new String(Character.toChars(0x2B1C)));
-        } else if (gamePlate[i][j].getState() == 1) {
+        } else if (gamePlate[i][j].getState() == State.FLAGGED) {
           System.out.print(new String(Character.toChars(0x1F6A9)));
-        } else if (gamePlate[i][j].getState() == -1 && gamePlate[i][j].isMine() == false) {
+        } else if (gamePlate[i][j].getState() == State.UNCOVERED
+            && gamePlate[i][j].isMine() == false) {
           System.out.printf("%s", gamePlate[i][j].toString());
         } else {
           System.out.print(new String(Character.toChars(0x1F4A5)));
