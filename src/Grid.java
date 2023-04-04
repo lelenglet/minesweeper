@@ -5,6 +5,7 @@ public class Grid {
   public static final String BLACK_BOLD = "\033[1;30m"; // BLACK
   public static final String RESET = "\033[0m"; // reset background color
   public static final String CLEAR = "\033[H\033[2J"; // console clear
+
   private final GridMatrix gamePlate;
   private final int nbMines;
   private final String header;
@@ -13,6 +14,7 @@ public class Grid {
     this.gamePlate = new GridMatrix(nbRows, nbColumns);
     this.nbMines = nbMines;
     this.header = createHeader();
+    this.initGrid();
   }
 
   public Cell getCell(final int x, final int y) {

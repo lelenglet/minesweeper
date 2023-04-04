@@ -41,7 +41,6 @@ public class Game {
 
     nbMines = (nbRows * nbColumns) * nbMines / 100;
     this.plateau = new Grid(nbRows, nbColumns, nbMines);
-    this.plateau.initGrid();
 
     int continu = 0;
     while (continu == 0) {
