@@ -3,8 +3,13 @@ import java.util.Scanner;
 public class Game {
   public static final String BLUE_BOLD = "\033[1;34m"; // BLUE
   public static final String RESET = "\033[0m"; // Text Reset
+  public static void main(final String[] args) {
+    final Game g = new Game();
+    g.newGame();
+  }
   private Grid plateau;
-  private Scanner s = new Scanner(System.in);
+
+  private final Scanner s = new Scanner(System.in);
 
   public void newGame() {
     this.clearScreen();
@@ -24,10 +29,10 @@ public class Game {
 
     System.out.println("\nEnter the number of rows in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    int nbRows = s.nextInt();
+    final int nbRows = s.nextInt();
     System.out.println("\nEnter the number of columns in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    int nbColumns = s.nextInt();
+    final int nbColumns = s.nextInt();
     System.out.println("\nEnter the purcentage of t in grid (press 'q' to quit)\n");
     System.out.printf("> ");
     int nbMines = s.nextInt();
@@ -51,14 +56,14 @@ public class Game {
     int returnValue = 0;
     this.plateau.displayGrid();
     System.out.println("Choose a box (x y)");
-    int x = s.nextInt();
-    int y = s.nextInt();
+    final int x = s.nextInt();
+    final int y = s.nextInt();
     System.out.println("Choose an action : r for reveal / m for mark");
-    char action = s.next().charAt(0);
+    final char action = s.next().charAt(0);
     if (action == 'm') {
       this.plateau.getCell(x, y).toggleFlagged();
     } else {
-      boolean mine = this.plateau.getCell(x, y).reveal();
+      final boolean mine = this.plateau.getCell(x, y).reveal();
       if (!mine) {
         returnValue = -1;
       } else {
@@ -99,13 +104,8 @@ public class Game {
     System.out.println(
         "    |__|     \\______/   \\______/         \\__/  \\__/     |__| |__| \\__|    (__) ");
   }
-
   public void clearScreen() {
     System.out.print("\033[H\033[2J");
     System.out.flush();
-  }
-  public static void main(String[] args) {
-    Game g = new Game();
-    g.newGame();
   }
 }
