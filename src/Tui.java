@@ -12,7 +12,65 @@ public class Tui implements Ui {
 
   public Tui() {}
 
-  public void displayGrid() { // non testée
+  public void menu() {
+    this.clearScreen();
+
+    System.out.println("\nNew game or load a saved game ? [n/l] (press q to quit)\n");
+    System.out.print("> ");
+    char action = input.next().charAt(0);
+
+    if (action == 'l') {
+      loadGame();
+    } else if (action == 'n') {
+      newGame();
+    }
+  }
+
+  public void play() {
+    this.menu();
+
+    int continu = 0;
+    while (continu == 0) {
+      continu = jouerCoup();
+    }
+    if (continu == -1) {
+      this.gamePlate.revealAll();
+      this.gameLost();
+    } else {
+      this.gameWon();
+    }
+  }
+
+  public int jouerCoup() {
+    int returnValue = 0;
+    this.displayGrid();
+    System.out.println("Choose a box (x y)");
+    final int x = input.nextInt();
+    final int y = input.nextInt();
+    System.out.println("Choose an action : r for reveal / m for mark");
+    final char action = input.next().charAt(0);
+    if (action == 'm') {
+      this.gamePlate.getCell(x, y).toggleFlagged();
+    } else if (action == 'a') {
+      this.gamePlate.revealAll();
+    } else {
+      final boolean explode = this.gamePlate.getCell(x, y).uncover();
+      if (explode) {
+        returnValue = -1;
+      } else {
+        if (this.gamePlate.checkWin()) {
+          returnValue = 1;
+        }
+      }
+    }
+    return returnValue;
+  }
+
+  private void loadGame() {
+    this.gamePlate = gamePlate.load();
+  }
+
+  private void displayGrid() { // non testée
     this.header = createHeader();
 
     System.out.printf(CLEAR);
@@ -36,12 +94,12 @@ public class Tui implements Ui {
     }
   }
 
-  public void clearScreen() {
+  private void clearScreen() {
     System.out.print("\033[H\033[2J");
     System.out.flush();
   }
 
-  public void gameLost() {
+  private void gameLost() {
     System.out.println(
         "____    ____  ______    __    __      __        ______     ______        _______. _______     __  ");
     System.out.println(
@@ -56,7 +114,7 @@ public class Tui implements Ui {
         "    |__|     \\______/   \\______/     |_______| \\______/   \\______/  |_______/    |_______|   (__) ");
   }
 
-  public void gameWon() {
+  private void gameWon() {
     System.out.println(
         "____    ____  ______    __    __     ____    __    ____  __  .__   __.     __  ");
     System.out.println(
@@ -70,10 +128,7 @@ public class Tui implements Ui {
     System.out.println(
         "    |__|     \\______/   \\______/         \\__/  \\__/     |__| |__| \\__|    (__) ");
   }
-
-  public int[] displayMenu() {
-    final int[] parameters = new int[3];
-
+  private void newGame() {
     this.clearScreen();
     System.out.println(
         BLUE_BOLD + "\n _______   _______ .___  ___.  __  .__   __.  _______  __    __  .______");
@@ -91,17 +146,15 @@ public class Tui implements Ui {
 
     System.out.println("\nEnter the number of rows in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    parameters[0] = input.nextInt();
+    int nbRows = input.nextInt();
     System.out.println("\nEnter the number of columns in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    parameters[1] = input.nextInt();
+    int nbColumns = input.nextInt();
     System.out.println("\nEnter the percentage of t in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    parameters[2] = input.nextInt();
-
-    return parameters;
+    int minesPercentage = input.nextInt();
+    this.gamePlate = new Plate(nbRows, nbColumns, minesPercentage);
   }
-
   private String createHeader() {
     final StringBuilder headerBuilder =
         new StringBuilder(WHITE_BACKGROUND + BLACK_BOLD + "\u0000 \u0000 \u0000 ");
@@ -115,9 +168,5 @@ public class Tui implements Ui {
       headerBuilder.append("\u2015 ");
     }
     return headerBuilder.toString();
-  }
-
-  public void setGamePlate(Plate gamePlate) {
-    this.gamePlate = gamePlate;
   }
 }
