@@ -8,26 +8,16 @@ public enum Direction {
   SOUTH_EAST,
   SOUTH_WEST;
 
-  public static Direction opposite(Direction d) {
-    switch (d) {
-      case NORTH:
-        return SOUTH;
-      case SOUTH:
-        return NORTH;
-      case EAST:
-        return WEST;
-      case WEST:
-        return EAST;
-      case NORTH_EAST:
-        return SOUTH_WEST;
-      case NORTH_WEST:
-        return SOUTH_EAST;
-      case SOUTH_EAST:
-        return NORTH_WEST;
-      case SOUTH_WEST:
-        return NORTH_EAST;
-      default:
-        return null;
-    }
+  public static Direction opposite(final Direction d) {
+    return switch (d) {
+      case NORTH -> SOUTH;
+      case SOUTH -> NORTH;
+      case EAST -> WEST;
+      case WEST -> EAST;
+      case NORTH_EAST -> SOUTH_WEST;
+      case NORTH_WEST -> SOUTH_EAST;
+      case SOUTH_EAST -> NORTH_WEST;
+      case SOUTH_WEST -> NORTH_EAST;
+    };
   }
 }
