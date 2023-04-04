@@ -5,7 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class Gui implements Ui {
+public class Gui {
   JFrame f;
   Plate gamePlate;
   Container pane;
@@ -25,6 +25,74 @@ public class Gui implements Ui {
   public void clearScreen() {
     pane.removeAll();
     pane.revalidate();
+  }
+
+  public void displayMenu() {
+    pane.setLayout(new GridLayout(2, 3));
+
+    JLabel label = new JLabel();
+    label.setText("DEMINEUR \n by Lenglet Léa and Chevalier Antoine");
+    label.setPreferredSize(new Dimension(500, 500));
+
+    JLabel plateSpec = new JLabel();
+    plateSpec.setLayout(new GridLayout(3, 1, 50, 50));
+
+    JLabel l = new JLabel();
+    JTextField rows = new JTextField();
+    rows.setSize(50, 50);
+    l.add(rows);
+    JTextField columns = new JTextField();
+    columns.setSize(50, 50);
+    l.add(columns);
+    JTextField percentageMine = new JTextField();
+    percentageMine.setSize(50, 50);
+    l.add(percentageMine);
+
+    JLabel buttons = new JLabel();
+    buttons.setLayout(new GridLayout(3, 1, 50, 50));
+
+    JButton nGame = new JButton("New Game");
+    nGame.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        int[] parameters = new int[3];
+        parameters[0] = Integer.parseInt(rows.getText());
+        parameters[1] = Integer.parseInt(columns.getText());
+        parameters[2] = Integer.parseInt(percentageMine.getText());
+        gamePlate = new Plate(parameters[0], parameters[1], parameters[2]);
+      }
+    });
+
+    JButton load = new JButton("Load Game");
+    load.setSize(100, 50);
+
+    load.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        // gamePlate.load();
+      }
+    });
+
+    JButton exit = new JButton("Exit");
+    exit.setSize(100, 50);
+    exit.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        f.dispose();
+      }
+    });
+
+    buttons.add(nGame);
+    buttons.add(load);
+    buttons.add(exit);
+
+    plateSpec.add(rows);
+    plateSpec.add(columns);
+    plateSpec.add(percentageMine);
+
+    pane.add(new JLabel());
+    pane.add(label);
+    pane.add(new JLabel());
+    pane.add(new JLabel());
+    pane.add(buttons);
+    pane.add(plateSpec);
   }
 
   /**
@@ -105,8 +173,8 @@ public class Gui implements Ui {
 
   public void gameWon() {}
 
-  public int[] displayMenu() {
-    int parameters[] = new int[3];
-    return parameters;
+  public static void main(String[] args) {
+    Gui ui = new Gui();
+    ui.displayMenu();
   }
 }
