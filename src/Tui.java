@@ -12,7 +12,7 @@ public class Tui implements Ui {
 
   public Tui() {}
 
-  public void menu() {
+  private void menu() {
     this.clearScreen();
 
     System.out.println("\nNew game or load a saved game ? [n/l] (press q to quit)\n");
