@@ -1,6 +1,7 @@
 import java.util.EnumMap;
+import javax.swing.JButton;
 
-class Cell {
+class Cell extends JButton {
   private int value;
   private State state;
   private final EnumMap<Direction, Cell> neighborhood;
@@ -42,9 +43,9 @@ class Cell {
 
   public void toggleFlagged() {
     if (getState() == State.FLAGGED) {
-      this.setState(State.COVERED);
+      this.state = State.COVERED;
     } else if (getState() == State.COVERED) {
-      this.setState(State.FLAGGED);
+      this.state = State.FLAGGED;
     }
   }
 
@@ -55,22 +56,18 @@ class Cell {
     }
   }
 
-  public boolean reveal() {
+  public boolean uncover() {
     if (this.getState() != State.FLAGGED && this.getState() == State.COVERED) {
-      this.setState(State.UNCOVERED);
+      this.state = State.UNCOVERED;
       if (this.getValue() == 0) {
         for (final Direction d : this.neighborhood.keySet()) {
-          this.neighborhood.get(d).reveal();
+          this.neighborhood.get(d).uncover();
         }
       } else if (this.isMine()) {
         return true;
       }
     }
     return false;
-  }
-
-  private void setState(final State state) {
-    this.state = state;
   }
 
   private Cell getNeighbor(final Direction d) {

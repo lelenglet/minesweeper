@@ -5,9 +5,9 @@ import java.awt.GridLayout;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class Gui {
+public class Gui implements Ui {
   JFrame f;
-  Grid gamePlate;
+  Plate gamePlate;
   Container pane;
 
   Gui() {
@@ -40,14 +40,14 @@ public class Gui {
 
     JLabel label = new JLabel();
 
-    label.setLayout(new GridLayout(gamePlate.getHeight(), gamePlate.getWidth()));
+    label.setLayout(new GridLayout(gamePlate.getNbRows(), gamePlate.getNbColumns()));
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        Cell c = new Cell(2);
+        Cell c = new Cell();
         JButton grid = new JButton();
         grid.setSize(20, 20);
         grid.setBackground(Color.lightGray);
-        if (c.getState() == -1) {
+        if (c.getState() == State.UNCOVERED) {
           grid.setText("" + c.getValue());
           grid.setBackground(Color.LIGHT_GRAY);
           grid.setEnabled(false);
@@ -62,7 +62,11 @@ public class Gui {
     pane.add(new JLabel());
   }
 
-  public void displayLose() {
+  public void setGamePlate(Plate gamePlate) {
+    this.gamePlate = gamePlate;
+  }
+
+  public void gameLost() {
     /*f.setLayout(new GridLayout(tab.getHeight(), tab.getWidth()));
     iterator it = tab.iterator();
     for (int i = 0; i < (tab.getHeight() * tab.getWidth()); i++) {
@@ -82,10 +86,10 @@ public class Gui {
     label.setLayout(new GridLayout(3, 3));
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        Cell c = new Cell(2);
+        Cell c = new Cell();
         JButton grid = new JButton();
         grid.setSize(20, 20);
-        if (c.getState() == -1 /*State.UNCOVER*/) {
+        if (c.getState() == State.UNCOVERED) {
           grid.setText("" + c.getValue());
           grid.setEnabled(false);
         }
@@ -99,8 +103,10 @@ public class Gui {
     f.add(new JLabel());
   }
 
-  public static void main(String[] args) {
-    Gui game = new Gui();
-    game.showMenu();
+  public void gameWon() {}
+
+  public int[] displayMenu() {
+    int parameters[] = new int[3];
+    return parameters;
   }
 }

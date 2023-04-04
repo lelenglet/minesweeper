@@ -7,11 +7,11 @@ public interface Matrix<E> {
   /**
    * Get the fetched matrix element.
    */
-  public E get(int row, int column);
+  public abstract E get(int row, int column);
 
-  public void set(int row, int column, E value);
+  public abstract void set(int row, int column, E value);
 
-  public int getNbRows();
+  public abstract int getNbRows();
 
-  public int getNbColumns();
+  public abstract int getNbColumns();
 }

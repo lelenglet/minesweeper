@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridMatrix implements Matrix<Cell> {
+public class PlateMatrix implements Matrix<Cell> {
   private final List<List<Cell>> matrix;
 
-  public GridMatrix(final int nbRows, final int nbColumns) {
+  public PlateMatrix(final int nbRows, final int nbColumns) {
     matrix = (List<List<Cell>>) new ArrayList<List<Cell>>();
     for (int i = 0; i < nbRows; i++) {
       matrix.add(new ArrayList<Cell>());
