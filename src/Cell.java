@@ -28,10 +28,6 @@ class Cell {
     return this.state;
   }
 
-  public Cell getNeighbor(final Direction d) {
-    return this.neighborhood.get(d);
-  }
-
   public boolean isMine() {
     return getValue() == -1;
   }
@@ -40,36 +36,44 @@ class Cell {
     return String.format(this.getValue() + "\uFE0F ");
   }
 
-  protected void setMine() {
+  public void setMine() {
     this.value = -1;
   }
 
-  protected void toggleFlagged() {
+  public void toggleFlagged() {
     if (getState() == State.FLAGGED) {
-      this.state = State.COVERED;
+      this.setState(State.COVERED);
     } else if (getState() == State.COVERED) {
-      this.state = State.FLAGGED;
+      this.setState(State.FLAGGED);
     }
   }
 
-  protected void connect(final Cell neighbor, final Direction dir) {
+  public void connect(final Cell neighbor, final Direction dir) {
     this.neighborhood.put(dir, neighbor);
     if (neighbor.getNeighbor(Direction.opposite(dir)) == null) {
       neighbor.connect(this, Direction.opposite(dir));
     }
   }
 
-  protected boolean reveal() {
-    if (this.getState() == State.COVERED) {
-      this.state = State.UNCOVERED;
+  public boolean reveal() {
+    if (this.getState() != State.FLAGGED && this.getState() == State.COVERED) {
+      this.setState(State.UNCOVERED);
       if (this.getValue() == 0) {
         for (final Direction d : this.neighborhood.keySet()) {
           this.neighborhood.get(d).reveal();
         }
       } else if (this.isMine()) {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
+  }
+
+  private void setState(final State state) {
+    this.state = state;
+  }
+
+  private Cell getNeighbor(final Direction d) {
+    return this.neighborhood.get(d);
   }
 }

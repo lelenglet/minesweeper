@@ -48,6 +48,7 @@ public class Game {
       continu = jouerCoup();
     }
     if (continu == -1) {
+      this.plateau.revealAll();
       looseGame();
     } else {
       winGame();
@@ -64,9 +65,11 @@ public class Game {
     final char action = s.next().charAt(0);
     if (action == 'm') {
       this.plateau.getCell(x, y).toggleFlagged();
+    } else if (action == 'a') {
+      this.plateau.revealAll();
     } else {
-      final boolean mine = this.plateau.getCell(x, y).reveal();
-      if (!mine) {
+      final boolean explode = this.plateau.getCell(x, y).reveal();
+      if (explode) {
         returnValue = -1;
       } else {
         if (this.plateau.checkWin()) {

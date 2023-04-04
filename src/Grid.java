@@ -43,9 +43,9 @@ public class Grid {
             this.gamePlate.get(i, j).connect(
                 this.gamePlate.get(i - 1, j + 1), Direction.NORTH_EAST);
           }
-          if (j > 0) {
-            this.gamePlate.get(i, j).connect(this.gamePlate.get(i, j - 1), Direction.WEST);
-          }
+        }
+        if (j < this.gamePlate.getNbColumns() - 1) {
+          this.gamePlate.get(i, j).connect(this.gamePlate.get(i, j + 1), Direction.EAST);
         }
       }
     }
@@ -118,5 +118,14 @@ public class Grid {
       header.append("\u2015 ");
     }
     return header.toString();
+  }
+
+  public void revealAll() {
+    for (int i = 0; i < this.gamePlate.getNbRows(); i++) {
+      for (int j = 0; j < this.gamePlate.getNbColumns(); j++) {
+        gamePlate.get(i, j).reveal();
+      }
+    }
+    this.displayGrid();
   }
 }
