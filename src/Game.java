@@ -3,10 +3,12 @@ import java.util.Scanner;
 public class Game {
   public static final String BLUE_BOLD = "\033[1;34m"; // BLUE
   public static final String RESET = "\033[0m"; // Text Reset
+
   public static void main(final String[] args) {
     final Game g = new Game();
     g.newGame();
   }
+
   private Grid plateau;
 
   private final Scanner s = new Scanner(System.in);
