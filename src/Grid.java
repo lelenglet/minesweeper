@@ -1,6 +1,10 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Random;
 
-public class Grid {
+public class Grid implements Savable {
   private int height;
   private int width;
   private Cell[][] gamePlate;
@@ -162,5 +166,30 @@ public class Grid {
       }
       System.out.println(RESET);
     }
+  }
+
+  public void save() {
+    try {
+      FileOutputStream fileOut = new FileOutputStream(filepath);
+      ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+      objectOut.writeObject(this);
+      objectOut.close();
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  public Object load() {
+    try {
+      FileInputStream fileInStr = new FileInputStream(filepath);
+      ObjectInputStream objInStr = new ObjectInputStream(fileInStr);
+      Object building = objInStr.readObject();
+      objInStr.close();
+      fileInStr.close();
+      return building;
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    throw new IllegalStateException("Pas de sauvegarde trouvée");
   }
 }
