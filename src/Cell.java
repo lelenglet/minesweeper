@@ -3,7 +3,7 @@ import java.util.EnumMap;
 class Cell {
   private int value;
   private State state;
-  private EnumMap<Direction, Cell> neighborhood;
+  private final EnumMap<Direction, Cell> neighborhood;
 
   Cell() {
     this.state = State.COVERED;
@@ -12,7 +12,7 @@ class Cell {
 
   public void setValue() {
     if (this.getValue() != -1) {
-      for (Direction d : this.neighborhood.keySet()) {
+      for (final Direction d : this.neighborhood.keySet()) {
         if (this.neighborhood.get(d).getValue() == -1) {
           this.value++;
         }
@@ -20,20 +20,28 @@ class Cell {
     }
   }
 
-  protected void setValue(int v) {
-    this.value = v;
-  }
-
   public int getValue() {
     return this.value;
+  }
+
+  public State getState() {
+    return this.state;
+  }
+
+  public Cell getNeighbor(final Direction d) {
+    return this.neighborhood.get(d);
   }
 
   public boolean isMine() {
     return getValue() == -1;
   }
 
-  public State getState() {
-    return this.state;
+  public String toString() {
+    return String.format(this.getValue() + "\uFE0F ");
+  }
+
+  protected void setMine() {
+    this.value = -1;
   }
 
   protected void toggleFlagged() {
@@ -44,15 +52,18 @@ class Cell {
     }
   }
 
-  protected void addNeighbor(Cell neighbor, Direction dir) {
+  protected void connect(final Cell neighbor, final Direction dir) {
     this.neighborhood.put(dir, neighbor);
+    if (neighbor.getNeighbor(Direction.opposite(dir)) == null) {
+      neighbor.connect(this, Direction.opposite(dir));
+    }
   }
 
   protected boolean reveal() {
     if (this.getState() == State.COVERED) {
       this.state = State.UNCOVERED;
       if (this.getValue() == 0) {
-        for (Direction d : this.neighborhood.keySet()) {
+        for (final Direction d : this.neighborhood.keySet()) {
           this.neighborhood.get(d).reveal();
         }
       } else if (this.isMine()) {
@@ -60,9 +71,5 @@ class Cell {
       }
     }
     return true;
-  }
-
-  public String toString() {
-    return String.format(this.getValue() + "\uFE0F ");
   }
 }
