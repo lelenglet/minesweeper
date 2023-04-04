@@ -24,16 +24,16 @@ public class Game {
 
     System.out.println("\nEnter the number of rows in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    int h = s.nextInt();
+    int nbRows = s.nextInt();
     System.out.println("\nEnter the number of columns in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    int w = s.nextInt();
+    int nbColumns = s.nextInt();
     System.out.println("\nEnter the purcentage of t in grid (press 'q' to quit)\n");
     System.out.printf("> ");
-    int m = s.nextInt();
+    int nbMines = s.nextInt();
 
-    m = (h * w) * m / 100;
-    this.plateau = new Grid(h, w, m);
+    nbMines = (nbRows * nbColumns) * nbMines / 100;
+    this.plateau = new Grid(nbRows, nbColumns, nbMines);
     this.plateau.initGrid();
 
     int continu = 0;
