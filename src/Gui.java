@@ -4,16 +4,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
-import java.util.Scanner;
-
 import javax.swing.*;
 
-public class Gui{
+public class Gui implements Ui, ActionListener {
   JFrame f;
   Plate gamePlate;
+  JButton[][] cellButtons;
   Container pane;
-  private final Scanner input = new Scanner(System.in);
-
 
   Gui() {
     this.f = new JFrame("Minesweeper - Antoine Chevalier | Léa Lenglet");
@@ -32,15 +29,18 @@ public class Gui{
     pane.revalidate();
   }
 
+  /**
+   * Display main menu of the game
+   */
   private void menu() {
-    pane.setLayout(new GridLayout(2, 3,100,100));
+    pane.setLayout(new GridLayout(2, 3, 100, 100));
 
     JLabel label = new JLabel();
     label.setLayout(new GridLayout(2, 1, 50, 50));
     JLabel title = new JLabel();
     title.setText("MINESWEEPER");
     title.setHorizontalTextPosition(JLabel.CENTER);
-    title.setFont(new Font("Lucida Sans",Font.PLAIN,40));
+    title.setFont(new Font("Lucida Sans", Font.PLAIN, 40));
     title.setVerticalAlignment(JLabel.CENTER);
 
     JLabel author = new JLabel();
@@ -87,23 +87,15 @@ public class Gui{
     pane.add(new JLabel());
     pane.add(new JLabel());
     pane.add(buttons);
-
-
-    System.out.println("\nNew game or load a saved game ? [n/l] (press q to quit)\n");
-    System.out.print("> ");
-    char action = input.next().charAt(0);
-
-    if (action == 'l') {
-      loadGame();
-    } else if (action == 'n') {
-      newGame();
-    }
   }
 
+  /**
+   * Fonction that allow user to enter the size of the grid
+   */
   public void newGame() {
     clearScreen();
 
-    pane.setLayout(new GridLayout(4,3,100,100));
+    pane.setLayout(new GridLayout(4, 3, 100, 100));
 
     JLabel rows = new JLabel();
     rows.setLayout(new GridLayout(2, 1, 300, 50));
@@ -139,10 +131,12 @@ public class Gui{
     submit.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int nbRows, nbColumns, minesPercentage;
-        nbRows=Integer.parseInt(inputRows.getText());
-        nbColumns=Integer.parseInt(inputColumns.getText());
-        minesPercentage=Integer.parseInt(inputMine.getText());
+        nbRows = Integer.parseInt(inputRows.getText());
+        nbColumns = Integer.parseInt(inputColumns.getText());
+        minesPercentage = Integer.parseInt(inputMine.getText());
         gamePlate = new Plate(nbRows, nbColumns, minesPercentage);
+        initButtons(nbRows, nbColumns);
+        game();
       }
     });
 
@@ -157,15 +151,36 @@ public class Gui{
     pane.add(new JLabel());
     pane.add(new JLabel());
     pane.add(submit);
-
   }
 
+  /**
+   * Launch the game in Gui mode
+   */
   public void play() {
     this.menu();
+  }
 
+  /**
+   * Initialize the grid of buttons and set addActionListener
+   */
+  public void initButtons(int rows, int columns) {
+    this.cellButtons = new JButton[rows][columns];
+    for (int i = 0; i < cellButtons.length; i++) {
+      for (int j = 0; j < cellButtons[0].length; j++) {
+        cellButtons[i][j] = new JButton();
+        cellButtons[i][j].addActionListener(this);
+      }
+    }
+  }
+
+  /**
+   * Boucle de jeu
+   */
+  public void game() {
+    this.displayGrid();
     int continu = 0;
     while (continu == 0) {
-      continu = jouerCoup();
+      /*continu =*/jouerCoup();
     }
     if (continu == -1) {
       this.gamePlate.revealAll();
@@ -175,10 +190,10 @@ public class Gui{
     }
   }
 
-  public int jouerCoup() {
+  public void jouerCoup() {
     int returnValue = 0;
     this.displayGrid();
-    System.out.println("Choose a box (x y)");
+    /*System.out.println("Choose a box (x y)");
     final int x = input.nextInt();
     final int y = input.nextInt();
     System.out.println("Choose an action : r for reveal / m for mark");
@@ -197,11 +212,11 @@ public class Gui{
         }
       }
     }
-    return returnValue;
+    return returnValue;*/
   }
 
   private void loadGame() {
-    //this.gamePlate = gamePlate.load();
+    // this.gamePlate = gamePlate.load();
   }
 
   /**
@@ -209,34 +224,17 @@ public class Gui{
    */
   public void displayGrid() {
     clearScreen();
-    /*f.setLayout(new GridLayout(tab.getHeight(), tab.getWidth()));
-    iterator it = tab.iterator();
-    for (int i = 0; i < (tab.getHeight() * tab.getWidth()); i++) {
-      it.next();
-    }*/
-
-    JLabel label = new JLabel();
-
-    label.setLayout(new GridLayout(gamePlate.getNbRows(), gamePlate.getNbColumns()));
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        Cell c = new Cell();
-        JButton grid = new JButton();
-        grid.setSize(20, 20);
-        grid.setBackground(Color.lightGray);
-        if (c.getState() == State.UNCOVERED) {
-          grid.setText("" + c.getValue());
-          grid.setBackground(Color.LIGHT_GRAY);
-          grid.setEnabled(false);
+    pane.setLayout(new GridLayout(gamePlate.getNbRows(), gamePlate.getNbColumns()));
+    for (int i = 0; i < gamePlate.getNbRows(); i++) {
+      for (int j = 0; j < gamePlate.getNbColumns(); j++) {
+        if (gamePlate.getCell(i, j).getState() == State.UNCOVERED) {
+          cellButtons[i][j].setText("" + gamePlate.getCell(i, j).getValue());
+          cellButtons[i][j].setBackground(Color.LIGHT_GRAY);
+          cellButtons[i][j].setEnabled(false);
         }
-        label.add(grid);
+        pane.add(cellButtons[i][j]);
       }
     }
-    pane.add(label);
-    pane.add(new JLabel());
-    pane.add(new JLabel());
-    pane.add(new JLabel());
-    pane.add(new JLabel());
   }
 
   public void setGamePlate(Plate gamePlate) {
@@ -250,9 +248,8 @@ public class Gui{
     JLabel title = new JLabel();
     title.setText("MINESWEEPER");
     title.setHorizontalTextPosition(JLabel.CENTER);
-    title.setFont(new Font("Lucida Sans",Font.PLAIN,40));
+    title.setFont(new Font("Lucida Sans", Font.PLAIN, 40));
     title.setVerticalAlignment(JLabel.CENTER);
-
   }
 
   public void gameWon() {}
@@ -260,5 +257,10 @@ public class Gui{
   public static void main(String[] args) {
     Gui ui = new Gui();
     ui.play();
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
   }
 }
