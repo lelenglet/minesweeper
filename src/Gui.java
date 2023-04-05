@@ -6,7 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class Gui implements Ui, ActionListener {
+public class Gui implements Ui, ActionListener, MouseListener {
   JFrame f;
   Plate gamePlate;
   JButton[][] cellButtons;
@@ -26,6 +26,8 @@ public class Gui implements Ui, ActionListener {
    */
   public void clearScreen() {
     pane.removeAll();
+    pane.setVisible(false);
+    pane.setVisible(true);
     pane.revalidate();
   }
 
@@ -136,7 +138,7 @@ public class Gui implements Ui, ActionListener {
         minesPercentage = Integer.parseInt(inputMine.getText());
         gamePlate = new Plate(nbRows, nbColumns, minesPercentage);
         initButtons(nbRows, nbColumns);
-        game();
+        displayGrid();
       }
     });
 
@@ -173,48 +175,6 @@ public class Gui implements Ui, ActionListener {
     }
   }
 
-  /**
-   * Boucle de jeu
-   */
-  public void game() {
-    this.displayGrid();
-    int continu = 0;
-    while (continu == 0) {
-      /*continu =*/jouerCoup();
-    }
-    if (continu == -1) {
-      this.gamePlate.revealAll();
-      this.gameLost();
-    } else {
-      this.gameWon();
-    }
-  }
-
-  public void jouerCoup() {
-    int returnValue = 0;
-    this.displayGrid();
-    /*System.out.println("Choose a box (x y)");
-    final int x = input.nextInt();
-    final int y = input.nextInt();
-    System.out.println("Choose an action : r for reveal / m for mark");
-    final char action = input.next().charAt(0);
-    if (action == 'm') {
-      this.gamePlate.getCell(x, y).toggleFlagged();
-    } else if (action == 'a') {
-      this.gamePlate.revealAll();
-    } else {
-      final boolean explode = this.gamePlate.getCell(x, y).uncover();
-      if (explode) {
-        returnValue = -1;
-      } else {
-        if (this.gamePlate.checkWin()) {
-          returnValue = 1;
-        }
-      }
-    }
-    return returnValue;*/
-  }
-
   private void loadGame() {
     // this.gamePlate = gamePlate.load();
   }
@@ -229,7 +189,6 @@ public class Gui implements Ui, ActionListener {
       for (int j = 0; j < gamePlate.getNbColumns(); j++) {
         if (gamePlate.getCell(i, j).getState() == State.UNCOVERED) {
           cellButtons[i][j].setText("" + gamePlate.getCell(i, j).getValue());
-          cellButtons[i][j].setBackground(Color.LIGHT_GRAY);
           cellButtons[i][j].setEnabled(false);
         }
         pane.add(cellButtons[i][j]);
@@ -242,17 +201,16 @@ public class Gui implements Ui, ActionListener {
   }
 
   public void gameLost() {
-    clearScreen();
-
-    f.setLayout(null);
-    JLabel title = new JLabel();
-    title.setText("MINESWEEPER");
-    title.setHorizontalTextPosition(JLabel.CENTER);
-    title.setFont(new Font("Lucida Sans", Font.PLAIN, 40));
-    title.setVerticalAlignment(JLabel.CENTER);
+    gamePlate.revealAll();
+    displayGrid();
+    JOptionPane.showMessageDialog(f, "You lost !");
+    f.dispose();
   }
 
-  public void gameWon() {}
+  public void gameWon() {
+    JOptionPane.showMessageDialog(f, "You won !");
+    f.dispose();
+  }
 
   public static void main(String[] args) {
     Gui ui = new Gui();
@@ -260,7 +218,47 @@ public class Gui implements Ui, ActionListener {
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
-    throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+  public void actionPerformed(ActionEvent ae) {
+    for (int i = 0; i < gamePlate.getNbRows(); i++) {
+      for (int j = 0; j < gamePlate.getNbColumns(); j++) {
+        if (ae.getSource() == cellButtons[i][j]) {
+          boolean explode = gamePlate.getCell(i, j).uncover();
+          System.out.println(explode);
+          displayGrid();
+          if (explode) {
+            gameLost();
+          } else if (gamePlate.checkWin()) {
+            gameWon();
+          }
+        }
+      }
+    }
+  }
+
+  @Override
+  public void mouseClicked(MouseEvent me) {
+    if (SwingUtilities.isRightMouseButton(me)) {
+      // TODO : Handle flagging of mines.
+    }
+  }
+
+  @Override
+  public void mousePressed(MouseEvent me) {
+    // Do nothing
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent me) {
+    // Do nothing
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent me) {
+    // Do nothing
+  }
+
+  @Override
+  public void mouseExited(MouseEvent me) {
+    // Do nothing
   }
 }
