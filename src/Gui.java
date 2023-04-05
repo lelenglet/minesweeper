@@ -6,7 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class Gui implements Ui, ActionListener, MouseListener {
+public class Gui implements Ui, MouseListener {
   JFrame f;
   Plate gamePlate;
   JButton[][] cellButtons;
@@ -170,7 +170,7 @@ public class Gui implements Ui, ActionListener, MouseListener {
     for (int i = 0; i < cellButtons.length; i++) {
       for (int j = 0; j < cellButtons[0].length; j++) {
         cellButtons[i][j] = new JButton();
-        cellButtons[i][j].addActionListener(this);
+        cellButtons[i][j].addMouseListener(this);
       }
     }
   }
@@ -187,10 +187,21 @@ public class Gui implements Ui, ActionListener, MouseListener {
     pane.setLayout(new GridLayout(gamePlate.getNbRows(), gamePlate.getNbColumns()));
     for (int i = 0; i < gamePlate.getNbRows(); i++) {
       for (int j = 0; j < gamePlate.getNbColumns(); j++) {
-        if (gamePlate.getCell(i, j).getState() == State.UNCOVERED) {
+        if (gamePlate.getCell(i, j).getState() == State.UNCOVERED
+            && !gamePlate.getCell(i, j).isMine()) {
           cellButtons[i][j].setText("" + gamePlate.getCell(i, j).getValue());
           cellButtons[i][j].setEnabled(false);
+        } else if (gamePlate.getCell(i, j).getState() == State.FLAGGED) {
+          cellButtons[i][j].setText("\u2691");
+        } else if (gamePlate.getCell(i, j).getState() == State.UNCOVERED
+            && gamePlate.getCell(i, j).isMine()) {
+          cellButtons[i][j].setText(new String(Character.toChars(0x1F4A5)));
+          cellButtons[i][j].setBackground(Color.red);
+          cellButtons[i][j].setEnabled(false);
+        } else {
+          cellButtons[i][j].setText("");
         }
+        cellButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 40));
         pane.add(cellButtons[i][j]);
       }
     }
@@ -218,17 +229,27 @@ public class Gui implements Ui, ActionListener, MouseListener {
   }
 
   @Override
-  public void actionPerformed(ActionEvent ae) {
-    for (int i = 0; i < gamePlate.getNbRows(); i++) {
-      for (int j = 0; j < gamePlate.getNbColumns(); j++) {
-        if (ae.getSource() == cellButtons[i][j]) {
-          boolean explode = gamePlate.getCell(i, j).uncover();
-          System.out.println(explode);
-          displayGrid();
-          if (explode) {
-            gameLost();
-          } else if (gamePlate.checkWin()) {
-            gameWon();
+  public void mouseClicked(MouseEvent e) {
+    if (e.getButton() == MouseEvent.BUTTON1) {
+      for (int i = 0; i < gamePlate.getNbRows(); i++) {
+        for (int j = 0; j < gamePlate.getNbColumns(); j++) {
+          if (e.getSource() == cellButtons[i][j]) { // Si le bouton cliqué est le courant
+            boolean explode = gamePlate.getCell(i, j).uncover();
+            displayGrid();
+            if (explode) {
+              gameLost();
+            } else if (gamePlate.checkWin()) {
+              gameWon();
+            }
+          }
+        }
+      }
+    } else if (e.getButton() == MouseEvent.BUTTON3) {
+      for (int i = 0; i < gamePlate.getNbRows(); i++) {
+        for (int j = 0; j < gamePlate.getNbColumns(); j++) {
+          if (e.getSource() == cellButtons[i][j]) { // Si le bouton cliqué est le courant
+            gamePlate.getCell(i, j).toggleFlagged();
+            displayGrid();
           }
         }
       }
@@ -236,29 +257,14 @@ public class Gui implements Ui, ActionListener, MouseListener {
   }
 
   @Override
-  public void mouseClicked(MouseEvent me) {
-    if (SwingUtilities.isRightMouseButton(me)) {
-      // TODO : Handle flagging of mines.
-    }
-  }
+  public void mouseEntered(MouseEvent e) {}
 
   @Override
-  public void mousePressed(MouseEvent me) {
-    // Do nothing
-  }
+  public void mouseExited(MouseEvent e) {}
 
   @Override
-  public void mouseReleased(MouseEvent me) {
-    // Do nothing
-  }
+  public void mousePressed(MouseEvent e) {}
 
   @Override
-  public void mouseEntered(MouseEvent me) {
-    // Do nothing
-  }
-
-  @Override
-  public void mouseExited(MouseEvent me) {
-    // Do nothing
-  }
+  public void mouseReleased(MouseEvent e) {}
 }

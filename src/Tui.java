@@ -67,7 +67,7 @@ public class Tui implements Ui {
   }
 
   private void loadGame() {
-    this.gamePlate = gamePlate.load();
+    // this.gamePlate = gamePlate.load();
   }
 
   private void displayGrid() { // non testée
