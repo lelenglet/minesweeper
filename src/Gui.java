@@ -15,6 +15,7 @@ public class Gui implements Ui, MouseListener {
   Gui() {
     this.f = new JFrame("Minesweeper - Antoine Chevalier | Léa Lenglet");
     f.setExtendedState(f.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+    f.setSize(1000, 1000);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.getContentPane().setBackground(Color.gray);
     f.setVisible(true);
@@ -32,11 +33,18 @@ public class Gui implements Ui, MouseListener {
   }
 
   /**
+   * Launch the game in Gui mode
+   */
+  public void play() {
+    this.showMenu();
+  }
+
+  /**
    * Display main menu of the game
    */
-  private void menu() {
+  private void showMenu() {
+    clearScreen();
     pane.setLayout(new GridLayout(2, 3, 100, 100));
-
     JLabel label = new JLabel();
     label.setLayout(new GridLayout(2, 1, 50, 50));
     JLabel title = new JLabel();
@@ -156,13 +164,6 @@ public class Gui implements Ui, MouseListener {
   }
 
   /**
-   * Launch the game in Gui mode
-   */
-  public void play() {
-    this.menu();
-  }
-
-  /**
    * Initialize the grid of buttons and set addActionListener
    */
   public void initButtons(int rows, int columns) {
@@ -201,7 +202,7 @@ public class Gui implements Ui, MouseListener {
         } else {
           cellButtons[i][j].setText("");
         }
-        cellButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 40));
+        cellButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 30));
         pane.add(cellButtons[i][j]);
       }
     }
@@ -215,12 +216,12 @@ public class Gui implements Ui, MouseListener {
     gamePlate.revealAll();
     displayGrid();
     JOptionPane.showMessageDialog(f, "You lost !");
-    f.dispose();
+    showMenu();
   }
 
   public void gameWon() {
     JOptionPane.showMessageDialog(f, "You won !");
-    f.dispose();
+    showMenu();
   }
 
   public static void main(String[] args) {
