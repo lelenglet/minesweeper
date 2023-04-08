@@ -192,7 +192,9 @@ public class Gui implements Ui, MouseListener {
             && !gamePlate.getCell(i, j).isMine()) {
           cellButtons[i][j].setText("" + gamePlate.getCell(i, j).getValue());
           cellButtons[i][j].setEnabled(false);
+          cellButtons[i][j].setBackground(Color.lightGray);
         } else if (gamePlate.getCell(i, j).getState() == State.FLAGGED) {
+          cellButtons[i][j].setBackground(Color.white);
           cellButtons[i][j].setText("\u2691");
         } else if (gamePlate.getCell(i, j).getState() == State.UNCOVERED
             && gamePlate.getCell(i, j).isMine()) {
@@ -200,6 +202,7 @@ public class Gui implements Ui, MouseListener {
           cellButtons[i][j].setBackground(Color.red);
           cellButtons[i][j].setEnabled(false);
         } else {
+          cellButtons[i][j].setBackground(Color.white);
           cellButtons[i][j].setText("");
         }
         cellButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 30));

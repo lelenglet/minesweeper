@@ -1,7 +1,6 @@
 import java.util.EnumMap;
-import javax.swing.JButton;
 
-class Cell extends JButton {
+class Cell {
   private int value;
   private State state;
   private final EnumMap<Direction, Cell> neighborhood;
