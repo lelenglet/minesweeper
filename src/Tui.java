@@ -79,16 +79,7 @@ public class Tui implements Ui {
       System.out.print(WHITE_BACKGROUND + BLACK_BOLD);
       System.out.print(i + "\uFE0F \u007C");
       for (int j = 0; j < gamePlate.getNbColumns(); j++) {
-        if (gamePlate.getCell(i, j).getState() == State.COVERED) {
-          System.out.print(new String(Character.toChars(0x2B1C)));
-        } else if (gamePlate.getCell(i, j).getState() == State.FLAGGED) {
-          System.out.print(new String(Character.toChars(0x1F6A9)));
-        } else if (gamePlate.getCell(i, j).getState() == State.UNCOVERED
-            && gamePlate.getCell(i, j).isMine() == false) {
-          System.out.printf("%s", gamePlate.getCell(i, j).toString());
-        } else {
-          System.out.print(new String(Character.toChars(0x1F4A5)));
-        }
+        System.out.print(gamePlate.getCell(i, j).toString());
       }
       System.out.println(RESET);
     }
@@ -157,13 +148,13 @@ public class Tui implements Ui {
   }
   private String createHeader() {
     final StringBuilder headerBuilder =
-        new StringBuilder(WHITE_BACKGROUND + BLACK_BOLD + "\u0000 \u0000 \u0000 ");
+        new StringBuilder(WHITE_BACKGROUND + BLACK_BOLD + "\u0000 \u0000 \u0000 \u0000 ");
 
     for (int i = 0; i < gamePlate.getNbRows(); i++) {
-      headerBuilder.append(i + "\uFE0F ");
+      headerBuilder.append(i + "\uFE0F");
     }
     headerBuilder.append("\n"
-        + "\u0000 \u0000 \u0000 ");
+        + "\u0000 \u0000 \u0000 \u0000 ");
     for (int i = 0; i < gamePlate.getNbColumns(); i++) {
       headerBuilder.append("\u2015 ");
     }
