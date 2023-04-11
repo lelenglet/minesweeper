@@ -1,6 +1,6 @@
 import java.util.EnumMap;
 
-class Cell {
+public class Cell {
   private int value;
   private State state;
   private final EnumMap<Direction, Cell> neighborhood;
@@ -10,10 +10,14 @@ class Cell {
     this.neighborhood = new EnumMap<Direction, Cell>(Direction.class);
   }
 
+  public void setMine() {
+    this.value = -1;
+  }
+
   public void setValue() {
-    if (this.getValue() != -1) {
+    if (!this.isMine()) {
       for (final Direction d : this.neighborhood.keySet()) {
-        if (this.neighborhood.get(d).getValue() == -1) {
+        if (this.neighborhood.get(d).isMine()) {
           this.value++;
         }
       }
@@ -33,11 +37,15 @@ class Cell {
   }
 
   public String toString() {
-    return String.format(this.getValue() + "\uFE0F ");
-  }
-
-  public void setMine() {
-    this.value = -1;
+    if (this.getState() == State.COVERED) {
+      return new String(Character.toChars(0x2B1C));
+    } else if (this.getState() == State.FLAGGED) {
+      return new String(Character.toChars(0x1F6A9));
+    } else if (this.getState() == State.UNCOVERED && !this.isMine()) {
+      return String.format(this.getValue() + "\uFE0F");
+    } else {
+      return new String(Character.toChars(0x1F4A5));
+    }
   }
 
   public void toggleFlagged() {
