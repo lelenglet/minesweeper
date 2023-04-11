@@ -1,12 +1,9 @@
 /**
- * A matrix inteface.
+ * Interface for a matrix of elements.
  *
- * @param E : type of the matrix element
+ * @param <E> the type of the elements in the matrix.
  */
 public interface Matrix<E> {
-  /**
-   * Get the fetched matrix element.
-   */
   public abstract E get(int row, int column);
 
   public abstract void set(int row, int column, E value);
