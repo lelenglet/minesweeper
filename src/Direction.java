@@ -1,3 +1,7 @@
+
+/**
+ * Enumeration of the 8 directions in which a cell can be connected to its neighbors.
+ */
 public enum Direction {
   NORTH,
   SOUTH,
@@ -8,6 +12,12 @@ public enum Direction {
   SOUTH_EAST,
   SOUTH_WEST;
 
+  /**
+   * Returns the opposite direction.
+   *
+   * @param d the direction
+   * @return the opposite direction
+   */
   public static Direction opposite(final Direction d) {
     return switch (d) {
       case NORTH -> SOUTH;
