@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.Scanner;
 
 public class Tui implements Ui {
@@ -53,6 +54,8 @@ public class Tui implements Ui {
       this.gamePlate.getCell(x, y).toggleFlagged();
     } else if (action == 'a') {
       this.gamePlate.revealAll();
+    } else if (action == 's') {
+      saveGame();
     } else {
       final boolean explode = this.gamePlate.getCell(x, y).uncover();
       if (explode) {
@@ -66,8 +69,29 @@ public class Tui implements Ui {
     return returnValue;
   }
 
+  private void saveGame() {
+    try {
+      FileOutputStream fos = new FileOutputStream("objectSave.ser");
+      ObjectOutputStream oos = new ObjectOutputStream(fos);
+      oos.writeObject(gamePlate);
+      oos.close();
+      fos.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   private void loadGame() {
-    // this.gamePlate = gamePlate.load();
+    try {
+      FileInputStream fis = new FileInputStream("objectSave.ser");
+      ObjectInputStream ois = new ObjectInputStream(fis);
+      Plate objet = (Plate) ois.readObject();
+      ois.close();
+      fis.close();
+      this.gamePlate = objet;
+    } catch (ClassNotFoundException | IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private void displayGrid() { // non testée

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
+import java.io.*;
 import javax.swing.*;
 
 public class Gui implements Ui, MouseListener {
@@ -176,8 +177,31 @@ public class Gui implements Ui, MouseListener {
     }
   }
 
+  private void saveGame() {
+    try {
+      FileOutputStream fos = new FileOutputStream("objectSave.ser");
+      ObjectOutputStream oos = new ObjectOutputStream(fos);
+      oos.writeObject(gamePlate);
+      oos.close();
+      fos.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   private void loadGame() {
-    // this.gamePlate = gamePlate.load();
+    try {
+      FileInputStream fis = new FileInputStream("objectSave.ser");
+      ObjectInputStream ois = new ObjectInputStream(fis);
+      Plate objet = (Plate) ois.readObject();
+      ois.close();
+      fis.close();
+      this.gamePlate = objet;
+      initButtons(gamePlate.getNbRows(), gamePlate.getNbColumns());
+    } catch (ClassNotFoundException | IOException e) {
+      e.printStackTrace();
+    }
+    displayGrid();
   }
 
   /**
@@ -245,6 +269,15 @@ public class Gui implements Ui, MouseListener {
             } else if (gamePlate.checkWin()) {
               gameWon();
             }
+          }
+        }
+      }
+    } else if (e.getButton() == MouseEvent.BUTTON2) {
+      for (int i = 0; i < gamePlate.getNbRows(); i++) {
+        for (int j = 0; j < gamePlate.getNbColumns(); j++) {
+          if (e.getSource() == cellButtons[i][j]) { // Si le bouton cliqué est le courant
+            saveGame();
+            displayGrid();
           }
         }
       }

@@ -1,10 +1,11 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * PlateMatrix implements a matrix of Cells.
  */
-public class PlateMatrix implements Matrix<Cell> {
+public class PlateMatrix implements Matrix<Cell>, Serializable {
   private final List<List<Cell>> matrix;
 
   /**

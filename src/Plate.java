@@ -1,6 +1,7 @@
+import java.io.*;
 import java.util.Random;
 
-public class Plate {
+public class Plate implements Serializable {
   public final PlateMatrix matrix;
 
   Plate(final int nbRows, final int nbColumns, final int minesPercentage) {

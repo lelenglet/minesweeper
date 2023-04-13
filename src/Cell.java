@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.EnumMap;
 
-public class Cell {
+public class Cell implements Serializable {
   private int value;
   private State state;
   private final EnumMap<Direction, Cell> neighborhood;
