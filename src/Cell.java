@@ -29,32 +29,43 @@ public class Cell implements Serializable {
     return this.value;
   }
 
-  public State getState() {
+  private State getState() {
     return this.state;
   }
 
+  public boolean isCovered() {
+    return this.getState() == State.COVERED;
+  }
+
+  public boolean isUncovered() {
+    return this.getState() == State.UNCOVERED;
+  }
+
+  public boolean isFlagged() {
+    return this.getState() == State.FLAGGED;
+  }
+
   public boolean isMine() {
-    return getValue() == -1;
+    return this.getValue() == -1;
   }
 
   public String toString() {
-    if (this.getState() == State.COVERED) {
-      return new String(Character.toChars(0x2B1C));
-    } else if (this.getState() == State.FLAGGED) {
-      return new String(Character.toChars(0x1F6A9));
-    } else if (this.getState() == State.UNCOVERED && !this.isMine()) {
-      return String.format(this.getValue() + "\uFE0F");
-    } else {
-      return new String(Character.toChars(0x1F4A5));
-    }
+    return switch (this.getState()) {
+      case COVERED -> new String();
+      case FLAGGED -> new String(Character.toChars(0x2691));
+      case UNCOVERED -> {
+        yield this.isMine() ? new String(Character.toChars(0x1F4A5))
+            : new String("" + this.getValue());
+      }
+    };
   }
 
   public void toggleFlagged() {
-    if (getState() == State.FLAGGED) {
-      this.state = State.COVERED;
-    } else if (getState() == State.COVERED) {
-      this.state = State.FLAGGED;
-    }
+    this.state = switch (this.getState()) {
+      case FLAGGED -> State.COVERED;
+      case COVERED -> State.FLAGGED;
+      case UNCOVERED -> State.UNCOVERED;
+    };
   }
 
   public void connect(final Cell neighbor, final Direction dir) {
@@ -65,17 +76,18 @@ public class Cell implements Serializable {
   }
 
   public boolean uncover() {
-    if (this.getState() != State.FLAGGED && this.getState() == State.COVERED) {
+    if (this.isCovered() && !this.isFlagged()) {
       this.state = State.UNCOVERED;
+
       if (this.getValue() == 0) {
         for (final Direction d : this.neighborhood.keySet()) {
           this.neighborhood.get(d).uncover();
         }
-      } else if (this.isMine()) {
-        return true;
       }
+      return this.isMine();
+    } else {
+      return false;
     }
-    return false;
   }
 
   private Cell getNeighbor(final Direction d) {

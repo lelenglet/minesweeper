@@ -7,7 +7,7 @@ import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
 
-public class Gui implements Ui, MouseListener {
+public class Gui implements MouseListener {
   JFrame f;
   Plate gamePlate;
   JButton[][] cellButtons;
@@ -34,16 +34,9 @@ public class Gui implements Ui, MouseListener {
   }
 
   /**
-   * Launch the game in Gui mode
-   */
-  public void play() {
-    this.showMenu();
-  }
-
-  /**
    * Display main menu of the game
    */
-  private void showMenu() {
+  public void showMenu() {
     clearScreen();
     pane.setLayout(new GridLayout(2, 3, 100, 100));
     JLabel label = new JLabel();

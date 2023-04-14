@@ -27,7 +27,7 @@ public class Plate implements Serializable {
   private void addCells() {
     for (int i = 0; i < this.matrix.getNbRows(); i++) {
       for (int j = 0; j < this.matrix.getNbColumns(); j++) {
-        matrix.set(i, j, new Cell());
+        this.matrix.set(i, j, new Cell());
       }
     }
   }
@@ -67,7 +67,7 @@ public class Plate implements Serializable {
   private void updateCellsValues() {
     for (int i = 0; i < this.matrix.getNbRows(); i++) {
       for (int j = 0; j < this.matrix.getNbColumns(); j++) {
-        matrix.get(i, j).setValue();
+        this.matrix.get(i, j).setValue();
       }
     }
   }
@@ -75,7 +75,7 @@ public class Plate implements Serializable {
   public boolean checkWin() {
     for (int i = 0; i < this.matrix.getNbRows(); i++) {
       for (int j = 0; j < this.matrix.getNbColumns(); j++) {
-        if (matrix.get(i, j).getValue() > 0 && matrix.get(i, j).getState() == State.COVERED) {
+        if (this.matrix.get(i, j).getValue() > 0 && this.matrix.get(i, j).isCovered()) {
           return false;
         }
       }
@@ -86,7 +86,7 @@ public class Plate implements Serializable {
   public void revealAll() {
     for (int i = 0; i < this.matrix.getNbRows(); i++) {
       for (int j = 0; j < this.matrix.getNbColumns(); j++) {
-        matrix.get(i, j).uncover();
+        this.matrix.get(i, j).uncover();
       }
     }
   }
