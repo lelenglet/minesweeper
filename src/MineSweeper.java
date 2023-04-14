@@ -1,11 +1,6 @@
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.file.Path;
 import javax.swing.*;
 
 public class MineSweeper implements MouseListener {
@@ -13,6 +8,12 @@ public class MineSweeper implements MouseListener {
   Plate gamePlate;
   JButton[][] cellButtons;
   Container pane;
+  Color[] colors = {
+      new Color(187, 225, 182), // vert clair
+      new Color(216, 226, 188), new Color(237, 227, 194), new Color(255, 221, 200),
+      new Color(255, 188, 161), new Color(255, 156, 123), new Color(255, 125, 85),
+      new Color(236, 87, 61), new Color(208, 36, 46) // rouge clair
+  };
 
   public static void main(final String[] args) {
     final MineSweeper game = new MineSweeper();
@@ -178,10 +179,11 @@ public class MineSweeper implements MouseListener {
   }
 
   private void saveGame() {
-    try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("save.ser"))) {
+    try (ObjectOutputStream outputStream =
+             new ObjectOutputStream(new FileOutputStream("save.ser"))) {
       outputStream.writeObject(gamePlate);
     } catch (IOException e) {
-      e.printStackTrace();
+      JOptionPane.showMessageDialog(frame, "Failed to save the object to file");
     }
   }
 
@@ -190,10 +192,11 @@ public class MineSweeper implements MouseListener {
       Plate objet = (Plate) inputStream.readObject();
       this.gamePlate = objet;
       initButtons(gamePlate.getNbRows(), gamePlate.getNbColumns());
+      displayGrid();
     } catch (ClassNotFoundException | IOException e) {
-      e.printStackTrace();
+      JOptionPane.showMessageDialog(frame, "There is no save to load !");
+      showMenu();
     }
-    displayGrid();
   }
 
   /**
@@ -201,24 +204,39 @@ public class MineSweeper implements MouseListener {
    */
   public void displayGrid() {
     clearScreen();
-    pane.setLayout(new GridLayout(gamePlate.getNbRows(), gamePlate.getNbColumns()));
-    for (int i = 0; i < gamePlate.getNbRows(); i++) {
-      for (int j = 0; j < gamePlate.getNbColumns(); j++) {
-        cellButtons[i][j].setText(gamePlate.getCell(i, j).toString());
+    pane.setLayout(new GridLayout(gamePlate.getNbRows() + 2, gamePlate.getNbColumns() + 2));
 
+    JButton save = new JButton("Save Game");
+    save.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        saveGame();
+      }
+    });
+    pane.add(save);
+
+    for (int j = 0; j < gamePlate.getNbColumns() + 1; j++) {
+      pane.add(new JLabel());
+    }
+    for (int i = 0; i < gamePlate.getNbRows(); i++) {
+      pane.add(new JLabel());
+      for (int j = 0; j < gamePlate.getNbColumns(); j++) {
         if (gamePlate.getCell(i, j).isUncovered()) {
           if (gamePlate.getCell(i, j).isMine()) {
             cellButtons[i][j].setBackground(Color.red);
             cellButtons[i][j].setEnabled(false);
           } else {
-            cellButtons[i][j].setBackground(Color.lightGray);
+            cellButtons[i][j].setBackground(colors[gamePlate.getCell(i, j).getValue()]);
             cellButtons[i][j].setEnabled(false);
           }
         }
-
+        cellButtons[i][j].setText(gamePlate.getCell(i, j).toString());
         cellButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 30));
         pane.add(cellButtons[i][j]);
       }
+      pane.add(new JLabel());
+    }
+    for (int j = 0; j < gamePlate.getNbColumns() + 2; j++) {
+      pane.add(new JLabel());
     }
   }
 
@@ -250,15 +268,6 @@ public class MineSweeper implements MouseListener {
           }
         }
       }
-    } else if (e.getButton() == MouseEvent.BUTTON2) {
-      for (int i = 0; i < gamePlate.getNbRows(); i++) {
-        for (int j = 0; j < gamePlate.getNbColumns(); j++) {
-          if (e.getSource() == cellButtons[i][j]) { // Si le bouton cliqué est le courant
-            saveGame();
-            displayGrid();
-          }
-        }
-      }
     } else if (e.getButton() == MouseEvent.BUTTON3) {
       for (int i = 0; i < gamePlate.getNbRows(); i++) {
         for (int j = 0; j < gamePlate.getNbColumns(); j++) {
@@ -272,18 +281,14 @@ public class MineSweeper implements MouseListener {
   }
 
   @Override
-  public void mouseEntered(MouseEvent e) {
-  }
+  public void mouseEntered(MouseEvent e) {}
 
   @Override
-  public void mouseExited(MouseEvent e) {
-  }
+  public void mouseExited(MouseEvent e) {}
 
   @Override
-  public void mousePressed(MouseEvent e) {
-  }
+  public void mousePressed(MouseEvent e) {}
 
   @Override
-  public void mouseReleased(MouseEvent e) {
-  }
+  public void mouseReleased(MouseEvent e) {}
 }
