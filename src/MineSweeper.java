@@ -47,16 +47,19 @@ public class MineSweeper implements MouseListener {
     clearScreen();
     pane.setLayout(new GridLayout(2, 3, 100, 100));
     JLabel label = new JLabel();
-    label.setLayout(new GridLayout(2, 1, 50, 50));
+    label.setLayout(new GridLayout(2, 1, 20, 20));
     JLabel title = new JLabel();
-    title.setText("MINESWEEPER");
-    title.setHorizontalTextPosition(JLabel.CENTER);
-    title.setFont(new Font("Lucida Sans", Font.PLAIN, 40));
+    Icon icon = new ImageIcon("logo.png");
+    title.setIcon(icon);
+    title.setPreferredSize(new Dimension(50, 10));
+    title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     title.setVerticalAlignment(JLabel.CENTER);
 
     JLabel author = new JLabel();
     author.setText("by Lenglet Léa and Chevalier Antoine");
+    author.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     author.setHorizontalTextPosition(JLabel.CENTER);
+    author.setFont(new Font("Arial", Font.BOLD, 16));
     author.setVerticalAlignment(JLabel.CENTER);
     label.add(title);
     label.add(author);
@@ -104,64 +107,57 @@ public class MineSweeper implements MouseListener {
    * Fonction that allow user to enter the size of the grid
    */
   public void newGame() {
-    clearScreen();
+    boolean cancel = false;
+    int nbRows = 0;
+    int nbColumns = 0;
+    int minesPercentage = 0;
+    String input;
 
-    pane.setLayout(new GridLayout(4, 3, 100, 100));
-
-    JLabel rows = new JLabel();
-    rows.setLayout(new GridLayout(2, 1, 300, 50));
-    JLabel columns = new JLabel();
-    columns.setLayout(new GridLayout(2, 1, 300, 50));
-    JLabel mines = new JLabel();
-    mines.setLayout(new GridLayout(2, 1, 300, 50));
-
-    JLabel r = new JLabel();
-    r.setText("Enter the number of rows in grid");
-    JTextField inputRows = new JTextField();
-    inputRows.setSize(50, 50);
-    rows.add(r);
-    rows.add(inputRows);
-    pane.add(rows);
-
-    JLabel c = new JLabel();
-    c.setText("Enter the number of columns in grid");
-    JTextField inputColumns = new JTextField();
-    inputColumns.setSize(50, 50);
-    columns.add(c);
-    columns.add(inputColumns);
-
-    JLabel p = new JLabel();
-    p.setText("Enter the percentage of t in grid");
-    JTextField inputMine = new JTextField();
-    inputMine.setSize(50, 50);
-    mines.add(p);
-    mines.add(inputMine);
-
-    JButton submit = new JButton("Next");
-    submit.setSize(100, 50);
-    submit.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        int nbRows, nbColumns, minesPercentage;
-        nbRows = Integer.parseInt(inputRows.getText());
-        nbColumns = Integer.parseInt(inputColumns.getText());
-        minesPercentage = Integer.parseInt(inputMine.getText());
-        gamePlate = new Plate(nbRows, nbColumns, minesPercentage);
-        initButtons(nbRows, nbColumns);
-        displayGrid();
+    while (cancel == false && (nbRows <= 0 || nbRows > 30)) {
+      input = JOptionPane.showInputDialog("Enter the number of rows (max 30):");
+      if (input == null) {
+        cancel = true;
+        break;
+      } else {
+        try {
+          nbRows = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+          JOptionPane.showMessageDialog(frame, "Invalid type of value !");
+        }
       }
-    });
+    }
+    while (cancel == false && (nbColumns <= 0 || nbColumns > 30)) {
+      input = JOptionPane.showInputDialog("Enter the number of columns (max 30):");
+      if (input == null) {
+        cancel = true;
+        break;
+      }
+      try {
+        nbColumns = Integer.parseInt(input);
+      } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(frame, "Invalid type of value !");
+      }
+    }
 
-    pane.add(new JLabel());
-    pane.add(rows);
-    pane.add(new JLabel());
-    pane.add(new JLabel());
-    pane.add(columns);
-    pane.add(new JLabel());
-    pane.add(new JLabel());
-    pane.add(mines);
-    pane.add(new JLabel());
-    pane.add(new JLabel());
-    pane.add(submit);
+    while (cancel == false && (minesPercentage < 10 || minesPercentage > 50)) {
+      input = JOptionPane.showInputDialog(
+          "Enter the percentage of mines in the grid (between 10 and 50): ");
+      if (input == null) {
+        cancel = true;
+
+        break;
+      }
+      try {
+        minesPercentage = Integer.parseInt(input);
+      } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(frame, "Invalid type of value !");
+      }
+    };
+    if (cancel == false) {
+      gamePlate = new Plate(nbRows, nbColumns, minesPercentage);
+      initButtons(nbRows, nbColumns);
+      displayGrid();
+    }
   }
 
   /**
@@ -178,17 +174,25 @@ public class MineSweeper implements MouseListener {
     }
   }
 
+  /**
+   * Save the gamePlate in a file
+   */
   private void saveGame() {
+    String m = JOptionPane.showInputDialog("Enter a file name : ");
     try (ObjectOutputStream outputStream =
-             new ObjectOutputStream(new FileOutputStream("save.ser"))) {
+             new ObjectOutputStream(new FileOutputStream(m + ".ser"))) {
       outputStream.writeObject(gamePlate);
     } catch (IOException e) {
       JOptionPane.showMessageDialog(frame, "Failed to save the object to file");
     }
   }
 
+  /**
+   * Load the file that contains a gamePlate
+   */
   private void loadGame() {
-    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("save.ser"))) {
+    String m = JOptionPane.showInputDialog("Enter a file name : ");
+    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(m + ".ser"))) {
       Plate objet = (Plate) inputStream.readObject();
       this.gamePlate = objet;
       initButtons(gamePlate.getNbRows(), gamePlate.getNbColumns());
@@ -206,15 +210,7 @@ public class MineSweeper implements MouseListener {
     clearScreen();
     pane.setLayout(new GridLayout(gamePlate.getNbRows() + 2, gamePlate.getNbColumns() + 2));
 
-    JButton save = new JButton("Save Game");
-    save.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        saveGame();
-      }
-    });
-    pane.add(save);
-
-    for (int j = 0; j < gamePlate.getNbColumns() + 1; j++) {
+    for (int j = 0; j < gamePlate.getNbColumns() + 2; j++) {
       pane.add(new JLabel());
     }
     for (int i = 0; i < gamePlate.getNbRows(); i++) {
@@ -230,12 +226,27 @@ public class MineSweeper implements MouseListener {
           }
         }
         cellButtons[i][j].setText(gamePlate.getCell(i, j).toString());
-        cellButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 30));
+        cellButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 25));
         pane.add(cellButtons[i][j]);
       }
       pane.add(new JLabel());
     }
-    for (int j = 0; j < gamePlate.getNbColumns() + 2; j++) {
+
+    for (int j = 0; j < (gamePlate.getNbColumns() + 2) / 2 - 1; j++) {
+      pane.add(new JLabel());
+    }
+    Box box = Box.createHorizontalBox();
+    box.add(Box.createHorizontalGlue());
+    JButton save = new JButton("Save");
+    save.setSize(new Dimension(50, 25));
+    save.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        saveGame();
+      }
+    });
+    box.add(save);
+    pane.add(box, BorderLayout.SOUTH);
+    for (int j = 0; j < (gamePlate.getNbColumns() + 2) / 2 - 1; j++) {
       pane.add(new JLabel());
     }
   }
