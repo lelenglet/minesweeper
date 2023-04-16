@@ -2,7 +2,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
-import javax.swing.filechooser.*;;
+
+/**
+ * The Minesweeper class is used to handle the graphical display of the game.
+ */
 
 public class MineSweeper implements MouseListener {
   public static void main(final String[] args) {
@@ -10,12 +13,12 @@ public class MineSweeper implements MouseListener {
     game.showMenu();
   }
 
-  JFrame frame;
-  Plate gamePlate;
-  JButton[][] cellButtons;
-  Container pane;
+  private JFrame frame;
+  private Plate gamePlate;
+  private JButton[][] cellButtons;
+  private Container pane;
 
-  Color[] colors = {
+  final private Color[] COLORS = {
       new Color(187, 225, 182), // vert clair
       new Color(216, 226, 188), new Color(237, 227, 194), new Color(255, 221, 200),
       new Color(255, 188, 161), new Color(255, 156, 123), new Color(255, 125, 85),
@@ -32,6 +35,11 @@ public class MineSweeper implements MouseListener {
     this.pane = frame.getContentPane();
   }
 
+  /**
+   * Execute functions based on the type of mouse button clicked.
+   *
+   * @param e Mouse-specific event performed
+   */
   @Override
   public void mouseClicked(final MouseEvent e) {
     if (e.getButton() == MouseEvent.BUTTON1) {
@@ -61,20 +69,16 @@ public class MineSweeper implements MouseListener {
   }
 
   @Override
-  public void mouseEntered(final MouseEvent e) {
-  }
+  public void mouseEntered(final MouseEvent e) {}
 
   @Override
-  public void mouseExited(final MouseEvent e) {
-  }
+  public void mouseExited(final MouseEvent e) {}
 
   @Override
-  public void mousePressed(final MouseEvent e) {
-  }
+  public void mousePressed(final MouseEvent e) {}
 
   @Override
-  public void mouseReleased(final MouseEvent e) {
-  }
+  public void mouseReleased(final MouseEvent e) {}
 
   /**
    * Clear all elements on the frame.
@@ -109,8 +113,8 @@ public class MineSweeper implements MouseListener {
     } while (nbColumns <= 0 || nbColumns > 30);
 
     do {
-      minesPercentage = this.askInt(
-          "Enter the percentage of mines in the grid (between 10 and 50):");
+      minesPercentage =
+          this.askInt("Enter the percentage of mines in the grid (between 10 and 50):");
       if (minesPercentage == Integer.MAX_VALUE) {
         return;
       }
@@ -154,7 +158,7 @@ public class MineSweeper implements MouseListener {
             cellButtons[i][j].setBackground(Color.red);
             cellButtons[i][j].setEnabled(false);
           } else {
-            cellButtons[i][j].setBackground(colors[gamePlate.getCell(i, j).getValue()]);
+            cellButtons[i][j].setBackground(COLORS[gamePlate.getCell(i, j).getValue()]);
             cellButtons[i][j].setEnabled(false);
           }
         }
@@ -198,8 +202,7 @@ public class MineSweeper implements MouseListener {
    * Display the win screen.
    */
   private void gameWon() {
-    JOptionPane.showMessageDialog(frame, "You won in "
-        + this.gamePlate.getTime() + " seconds!");
+    JOptionPane.showMessageDialog(frame, "You won in " + this.gamePlate.getTime() + " seconds!");
     showMenu();
   }
 
@@ -209,8 +212,8 @@ public class MineSweeper implements MouseListener {
   private void saveGame() {
     final String m = JOptionPane.showInputDialog("Enter a file name : ");
     this.gamePlate.stopChrono();
-    try (ObjectOutputStream outputStream = new ObjectOutputStream(
-        new FileOutputStream(m + ".ser"))) {
+    try (ObjectOutputStream outputStream =
+             new ObjectOutputStream(new FileOutputStream(m + ".ser"))) {
       outputStream.writeObject(gamePlate);
     } catch (final IOException e) {
       JOptionPane.showMessageDialog(frame, "Failed to save the object to file");
@@ -237,7 +240,7 @@ public class MineSweeper implements MouseListener {
 
   /**
    * Ask an integer to the user.
-   * 
+   *
    * @param message the message to display to the user
    * @return the integer entered by the user
    */
@@ -319,5 +322,4 @@ public class MineSweeper implements MouseListener {
     pane.add(new JLabel());
     pane.add(buttons);
   }
-
 }
