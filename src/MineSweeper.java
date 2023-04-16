@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
+import javax.swing.filechooser.*;;
 
 public class MineSweeper implements MouseListener {
   public static void main(final String[] args) {
@@ -32,12 +33,12 @@ public class MineSweeper implements MouseListener {
   }
 
   @Override
-  public void mouseClicked(MouseEvent e) {
+  public void mouseClicked(final MouseEvent e) {
     if (e.getButton() == MouseEvent.BUTTON1) {
       for (int i = 0; i < gamePlate.getNbRows(); i++) {
         for (int j = 0; j < gamePlate.getNbColumns(); j++) {
           if (e.getSource() == cellButtons[i][j]) { // Si le bouton cliqué est le courant
-            boolean explode = gamePlate.getCell(i, j).uncover();
+            final boolean explode = gamePlate.uncoverCell(i, j);
             displayGrid();
             if (explode) {
               gameLost();
@@ -51,7 +52,7 @@ public class MineSweeper implements MouseListener {
       for (int i = 0; i < gamePlate.getNbRows(); i++) {
         for (int j = 0; j < gamePlate.getNbColumns(); j++) {
           if (e.getSource() == cellButtons[i][j]) { // Si le bouton cliqué est le courant
-            gamePlate.getCell(i, j).toggleFlagged();
+            gamePlate.toggleFlagCell(i, j);
             displayGrid();
           }
         }
@@ -60,19 +61,19 @@ public class MineSweeper implements MouseListener {
   }
 
   @Override
-  public void mouseEntered(MouseEvent e) {
+  public void mouseEntered(final MouseEvent e) {
   }
 
   @Override
-  public void mouseExited(MouseEvent e) {
+  public void mouseExited(final MouseEvent e) {
   }
 
   @Override
-  public void mousePressed(MouseEvent e) {
+  public void mousePressed(final MouseEvent e) {
   }
 
   @Override
-  public void mouseReleased(MouseEvent e) {
+  public void mouseReleased(final MouseEvent e) {
   }
 
   /**
@@ -124,7 +125,7 @@ public class MineSweeper implements MouseListener {
   /**
    * Initialize the grid of buttons and set addActionListener.
    */
-  private void initButtons(int row, int column) {
+  private void initButtons(final int row, final int column) {
     this.cellButtons = new JButton[row][column];
     for (int i = 0; i < cellButtons.length; i++) {
       for (int j = 0; j < cellButtons[0].length; j++) {
@@ -167,12 +168,12 @@ public class MineSweeper implements MouseListener {
     for (int j = 0; j < (gamePlate.getNbColumns() + 2) / 2 - 1; j++) {
       pane.add(new JLabel());
     }
-    Box box = Box.createHorizontalBox();
+    final Box box = Box.createHorizontalBox();
     box.add(Box.createHorizontalGlue());
-    JButton save = new JButton("Save");
+    final JButton save = new JButton("Save");
     save.setSize(new Dimension(50, 25));
     save.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         saveGame();
       }
     });
@@ -183,6 +184,9 @@ public class MineSweeper implements MouseListener {
     }
   }
 
+  /**
+   * Display the loss screen.
+   */
   private void gameLost() {
     gamePlate.revealAll();
     displayGrid();
@@ -190,13 +194,54 @@ public class MineSweeper implements MouseListener {
     showMenu();
   }
 
+  /**
+   * Display the win screen.
+   */
   private void gameWon() {
     JOptionPane.showMessageDialog(frame, "You won in "
-        + this.gamePlate.getTime() / 1000 + " seconds!");
+        + this.gamePlate.getTime() + " seconds!");
     showMenu();
   }
 
-  private int askInt(String message) {
+  /**
+   * Save the gamePlate in a file.
+   */
+  private void saveGame() {
+    final String m = JOptionPane.showInputDialog("Enter a file name : ");
+    this.gamePlate.stopChrono();
+    try (ObjectOutputStream outputStream = new ObjectOutputStream(
+        new FileOutputStream(m + ".ser"))) {
+      outputStream.writeObject(gamePlate);
+    } catch (final IOException e) {
+      JOptionPane.showMessageDialog(frame, "Failed to save the object to file");
+    }
+    this.gamePlate.startChrono();
+  }
+
+  /**
+   * Load the file that contains a gamePlate.
+   */
+  private void loadGame() {
+    final String m = JOptionPane.showInputDialog("Enter a file name : ");
+    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(m + ".ser"))) {
+      final Plate loadedGamePlate = (Plate) inputStream.readObject();
+      this.gamePlate = loadedGamePlate;
+      initButtons(gamePlate.getNbRows(), gamePlate.getNbColumns());
+      this.gamePlate.startChrono();
+      displayGrid();
+    } catch (ClassNotFoundException | IOException e) {
+      JOptionPane.showMessageDialog(frame, "There is no save to load !");
+      showMenu();
+    }
+  }
+
+  /**
+   * Ask an integer to the user.
+   * 
+   * @param message the message to display to the user
+   * @return the integer entered by the user
+   */
+  private int askInt(final String message) {
     String input;
 
     input = JOptionPane.showInputDialog(message);
@@ -205,7 +250,7 @@ public class MineSweeper implements MouseListener {
     } else {
       try {
         return Integer.parseInt(input);
-      } catch (NumberFormatException e) {
+      } catch (final NumberFormatException e) {
         JOptionPane.showMessageDialog(frame, "Invalid type of value !");
         return askInt(message);
       }
@@ -218,16 +263,16 @@ public class MineSweeper implements MouseListener {
   private void showMenu() {
     clearScreen();
     pane.setLayout(new GridLayout(2, 3, 100, 100));
-    JLabel label = new JLabel();
+    final JLabel label = new JLabel();
     label.setLayout(new GridLayout(2, 1, 20, 20));
-    JLabel title = new JLabel();
-    Icon icon = new ImageIcon("logo.png");
+    final JLabel title = new JLabel();
+    final Icon icon = new ImageIcon("logo.png");
     title.setIcon(icon);
     title.setPreferredSize(new Dimension(50, 10));
     title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     title.setVerticalAlignment(JLabel.CENTER);
 
-    JLabel author = new JLabel();
+    final JLabel author = new JLabel();
     author.setText("by Lenglet Léa and Chevalier Antoine");
     author.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     author.setHorizontalTextPosition(JLabel.CENTER);
@@ -237,29 +282,29 @@ public class MineSweeper implements MouseListener {
     label.add(author);
     label.setPreferredSize(new Dimension(500, 500));
 
-    JLabel buttons = new JLabel();
+    final JLabel buttons = new JLabel();
     buttons.setLayout(new GridLayout(3, 1, 50, 50));
 
-    JButton nGame = new JButton("New Game");
+    final JButton nGame = new JButton("New Game");
     nGame.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         newGame();
       }
     });
 
-    JButton load = new JButton("Load Game");
+    final JButton load = new JButton("Load Game");
     load.setSize(100, 50);
 
     load.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         loadGame();
       }
     });
 
-    JButton exit = new JButton("Exit");
+    final JButton exit = new JButton("Exit");
     exit.setSize(100, 50);
     exit.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(final ActionEvent e) {
         frame.dispose();
       }
     });
@@ -275,34 +320,4 @@ public class MineSweeper implements MouseListener {
     pane.add(buttons);
   }
 
-  /**
-   * Save the gamePlate in a file
-   */
-  private void saveGame() {
-    String m = JOptionPane.showInputDialog("Enter a file name : ");
-    try (ObjectOutputStream outputStream = new ObjectOutputStream(
-        new FileOutputStream(m + ".ser"))) {
-      this.gamePlate.stopChrono();
-      outputStream.writeObject(gamePlate);
-    } catch (IOException e) {
-      JOptionPane.showMessageDialog(frame, "Failed to save the object to file");
-    }
-  }
-
-  /**
-   * Load the file that contains a gamePlate
-   */
-  private void loadGame() {
-    String m = JOptionPane.showInputDialog("Enter a file name : ");
-    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(m + ".ser"))) {
-      Plate loadedGamePlate = (Plate) inputStream.readObject();
-      this.gamePlate = loadedGamePlate;
-      initButtons(gamePlate.getNbRows(), gamePlate.getNbColumns());
-      this.gamePlate.startChrono();
-      displayGrid();
-    } catch (ClassNotFoundException | IOException e) {
-      JOptionPane.showMessageDialog(frame, "There is no save to load !");
-      showMenu();
-    }
-  }
 }

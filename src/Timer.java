@@ -34,6 +34,6 @@ public class Timer implements Serializable {
    */
   public long getElapsedTime() {
     this.stop();
-    return elapsedTime;
+    return elapsedTime / 1000;
   }
 }

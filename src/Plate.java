@@ -18,26 +18,78 @@ public class Plate implements Serializable {
     this.updateCellsValues();
   }
 
+  /**
+   * Stop the chrono.
+   */
   public void stopChrono() {
     this.chrono.stop();
   }
 
+  /**
+   * Start the chrono.
+   */
   public void startChrono() {
     this.chrono.start();
   }
 
+  /**
+   * Return the elapsed time since the start of the chrono.
+   *
+   * @return the time in seconds
+   */
   public long getTime() {
     return this.chrono.getElapsedTime();
   }
 
+  /**
+   * Gets the cell according to its position in the matrix.
+   * 
+   * @return the cell
+   */
   public Cell getCell(final int x, final int y) {
     return matrix.get(x, y);
   }
 
+  /**
+   * Uncover a cell and check if it's a mine. If it's a mine, it's game over.
+   * 
+   * @param x the x position of the cell
+   * @param y the y position of the cell
+   * @return true if it's a mine
+   */
+  public boolean uncoverCell(final int x, final int y) {
+    final Cell cell = this.matrix.get(x, y);
+    cell.uncover();
+    if (cell.getValue() == 0) {
+      this.uncoverNeighbors(cell);
+    }
+    return cell.isMine();
+  }
+
+  /**
+   * Toggle the flag on a cell.
+   * 
+   * @param x the x position of the cell
+   * @param y the y position of the cell
+   */
+  public void toggleFlagCell(final int x, final int y) {
+    this.matrix.get(x, y).toggleFlagged();
+  }
+
+  /**
+   * Gets the number of rows in the matrix.
+   *
+   * @return numbers of rows
+   */
   public int getNbRows() {
     return this.matrix.getNbRows();
   }
 
+  /**
+   * Gets the number of columns in the matrix.
+   *
+   * @return numbers of columns
+   */
   public int getNbColumns() {
     return this.matrix.getNbColumns();
   }
@@ -64,7 +116,23 @@ public class Plate implements Serializable {
   public void revealAll() {
     for (int i = 0; i < this.matrix.getNbRows(); i++) {
       for (int j = 0; j < this.matrix.getNbColumns(); j++) {
-        this.matrix.get(i, j).uncover();
+        this.uncoverCell(i, j);
+      }
+    }
+  }
+
+  /**
+   * Uncover all neighbors of a cell.
+   * 
+   * @param cell the cell
+   */
+  private void uncoverNeighbors(final Cell cell) {
+    for (final Cell neighbor : cell.getNeighbors()) {
+      if (neighbor.isCovered()) {
+        neighbor.uncover();
+        if (neighbor.getValue() == 0) {
+          this.uncoverNeighbors(neighbor);
+        }
       }
     }
   }

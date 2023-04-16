@@ -1,5 +1,7 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.Iterator;
 
 /**
  * The Cell class is used to create a new cell.
@@ -125,22 +127,20 @@ public class Cell implements Serializable {
 
   /**
    * Uncover the cell.
-   * 
-   * @return true if the cell is a mine
    */
-  public boolean uncover() {
+  public void uncover() {
     if (this.isCovered() && !this.isFlagged()) {
       this.state = State.UNCOVERED;
-
-      if (this.getValue() == 0) {
-        for (final Direction d : this.neighborhood.keySet()) {
-          this.neighborhood.get(d).uncover();
-        }
-      }
-      return this.isMine();
-    } else {
-      return false;
     }
+  }
+
+  /**
+   * Get the neighbors of the cell.
+   * 
+   * @return the neighbors
+   */
+  public Iterable<Cell> getNeighbors() {
+    return this.neighborhood.values();
   }
 
   /**
