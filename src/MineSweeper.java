@@ -226,15 +226,17 @@ public class MineSweeper implements MouseListener {
    */
   private void loadGame() {
     final String m = JOptionPane.showInputDialog("Enter a file name : ");
-    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(m + ".ser"))) {
-      final Plate loadedGamePlate = (Plate) inputStream.readObject();
-      this.gamePlate = loadedGamePlate;
-      initButtons(gamePlate.getNbRows(), gamePlate.getNbColumns());
-      this.gamePlate.startChrono();
-      displayGrid();
-    } catch (ClassNotFoundException | IOException e) {
-      JOptionPane.showMessageDialog(frame, "There is no save to load !");
-      showMenu();
+    if (m != null) {
+      try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(m + ".ser"))) {
+        final Plate loadedGamePlate = (Plate) inputStream.readObject();
+        this.gamePlate = loadedGamePlate;
+        initButtons(gamePlate.getNbRows(), gamePlate.getNbColumns());
+        this.gamePlate.startChrono();
+        displayGrid();
+      } catch (ClassNotFoundException | IOException e) {
+        JOptionPane.showMessageDialog(frame, "There is no save to load !");
+        showMenu();
+      }
     }
   }
 
