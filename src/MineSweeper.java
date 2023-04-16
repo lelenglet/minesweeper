@@ -266,24 +266,13 @@ public class MineSweeper implements MouseListener {
   private void showMenu() {
     clearScreen();
     pane.setLayout(new GridLayout(2, 3, 100, 100));
-    final JLabel label = new JLabel();
-    label.setLayout(new GridLayout(2, 1, 20, 20));
     final JLabel title = new JLabel();
-    final Icon icon = new ImageIcon("logo.png");
-    title.setIcon(icon);
-    title.setPreferredSize(new Dimension(50, 10));
     title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     title.setVerticalAlignment(JLabel.CENTER);
-
-    final JLabel author = new JLabel();
-    author.setText("by Lenglet Léa and Chevalier Antoine");
-    author.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    author.setHorizontalTextPosition(JLabel.CENTER);
-    author.setFont(new Font("Arial", Font.BOLD, 16));
-    author.setVerticalAlignment(JLabel.CENTER);
-    label.add(title);
-    label.add(author);
-    label.setPreferredSize(new Dimension(500, 500));
+    title.setText(
+        "<html><pre><br>       _ <br>      (_)  <br> ____  _ ____   ____  ___  _ _ _  ____ ____ ____   ____  ____<br>|    \\| |  _ \\ / _  )/___) | | |/ _  ) _  )  _ \\ / _  )/ ___)<br>| | | | | | | ( (/ /|___ | | | ( (/ ( (/ /| | | ( (/ /| |<br>|_|_|_|_|_| |_|\\____|___/ \\____|\\____)____) ||_/ \\____)_|<br>                                           |_|<br> <br>              by Lenglet Léa and Chevalier Antoine</pre></html>");
+    title.setHorizontalTextPosition(JLabel.CENTER);
+    title.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
     final JLabel buttons = new JLabel();
     buttons.setLayout(new GridLayout(3, 1, 50, 50));
@@ -317,7 +306,7 @@ public class MineSweeper implements MouseListener {
     buttons.add(exit);
 
     pane.add(new JLabel());
-    pane.add(label);
+    pane.add(title);
     pane.add(new JLabel());
     pane.add(new JLabel());
     pane.add(buttons);
